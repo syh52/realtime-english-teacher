@@ -20,12 +20,47 @@ if [ ! -f "$CONFIG_FILE" ]; then
     exit 1
 fi
 
+# 验证配置函数
+validate_config() {
+    local missing_fields=()
+
+    # 检查必需的嵌套字段
+    if [ "$(jq -r '.server.ip' "$CONFIG_FILE")" = "null" ]; then
+        missing_fields+=("server.ip")
+    fi
+    if [ "$(jq -r '.server.user' "$CONFIG_FILE")" = "null" ]; then
+        missing_fields+=("server.user")
+    fi
+    if [ "$(jq -r '.server.ssh_key_path' "$CONFIG_FILE")" = "null" ]; then
+        missing_fields+=("server.ssh_key_path")
+    fi
+    if [ "$(jq -r '.server.remote_dir' "$CONFIG_FILE")" = "null" ]; then
+        missing_fields+=("server.remote_dir")
+    fi
+    if [ "$(jq -r '.local.project_dir' "$CONFIG_FILE")" = "null" ]; then
+        missing_fields+=("local.project_dir")
+    fi
+
+    if [ ${#missing_fields[@]} -gt 0 ]; then
+        echo -e "${RED}错误: 配置文件缺少必需字段:${NC}"
+        for field in "${missing_fields[@]}"; do
+            echo "  - $field"
+        done
+        echo ""
+        echo "请检查 $CONFIG_FILE 并补充缺失的字段"
+        exit 1
+    fi
+}
+
+# 验证配置
+validate_config
+
 # 从配置文件读取信息
-SERVER_IP=$(jq -r '.public_ip' "$CONFIG_FILE")
-SSH_KEY="$HOME/.ssh/openai-proxy-key.pem"
-REMOTE_USER="root"
-REMOTE_DIR="/root/openai-realtime-api-nextjs"
-LOCAL_PROJECT_DIR="/home/dministrator/Newproject/realtime-english-teacher-source"
+SERVER_IP=$(jq -r '.server.ip' "$CONFIG_FILE")
+REMOTE_USER=$(jq -r '.server.user' "$CONFIG_FILE")
+SSH_KEY=$(jq -r '.server.ssh_key_path' "$CONFIG_FILE")
+REMOTE_DIR=$(jq -r '.server.remote_dir' "$CONFIG_FILE")
+LOCAL_PROJECT_DIR=$(jq -r '.local.project_dir' "$CONFIG_FILE")
 
 echo -e "${GREEN}=== 开始更新云端代码 ===${NC}"
 echo "服务器: $SERVER_IP"

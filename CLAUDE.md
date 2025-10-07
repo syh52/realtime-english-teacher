@@ -54,7 +54,7 @@ cd deployment
 
 ```bash
 # SSH 登录
-ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140
 
 # 查看服务状态
 pm2 status
@@ -147,7 +147,7 @@ realtime-english-teacher/
 # 查看是否有 CORS、SSL 或 WebRTC 错误
 
 # 2. 检查服务器日志
-ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140
 pm2 logs realtime-english
 
 # 3. 验证 API Key

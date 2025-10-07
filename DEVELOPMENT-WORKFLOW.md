@@ -10,10 +10,25 @@
 
 ## 第一次设置(仅需一次)
 
+### 0. 配置 Git 用户信息(首次使用 Git)
+
+如果你是第一次使用 Git,需要先配置用户信息:
+
+```bash
+# 配置全局用户名和邮箱
+git config --global user.name "你的名字"
+git config --global user.email "你的邮箱@example.com"
+
+# 验证配置
+git config --global --list
+```
+
+⚠️ **重要**: 如果跳过这一步,在执行 `git commit` 时会报错: `fatal: empty ident name not allowed`
+
 ### 1. 初始化 Git 仓库
 
 ```bash
-cd /home/dministrator/Newproject/realtime-english-teacher
+cd /home/dministrator/Newproject/realtime-english-teacher-source
 
 # 初始化 Git
 git init
@@ -77,7 +92,7 @@ cd deployment
 
 ```bash
 # 1. SSH 登录服务器
-ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140
 
 # 2. 编辑文件
 cd ~/openai-realtime-api-nextjs
@@ -95,8 +110,8 @@ pm2 logs realtime-english
 # ⚠️ 重要:修改后立即同步回本地!
 # 在本地执行:
 rsync -avz -e "ssh -i ~/.ssh/openai-proxy-key.pem" \
-  ubuntu@8.219.239.140:~/openai-realtime-api-nextjs/ \
-  /home/dministrator/Newproject/realtime-english-teacher/
+  root@8.219.239.140:~/openai-realtime-api-nextjs/ \
+  /home/dministrator/Newproject/realtime-english-teacher-source/
 
 # 然后提交到 Git
 git add .
@@ -190,10 +205,10 @@ nano .env.local
 # 2. 同步到服务器
 scp -i ~/.ssh/openai-proxy-key.pem \
   .env.local \
-  ubuntu@8.219.239.140:~/openai-realtime-api-nextjs/.env.local
+  root@8.219.239.140:~/openai-realtime-api-nextjs/.env.local
 
 # 3. 重启服务
-ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140 \
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140 \
   "cd ~/openai-realtime-api-nextjs && pm2 restart realtime-english"
 ```
 
@@ -203,10 +218,10 @@ ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140 \
 
 ```bash
 # 1. 检查服务状态
-ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140 "pm2 status"
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140 "pm2 status"
 
 # 2. 查看最近日志
-ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140 "pm2 logs realtime-english --lines 50"
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140 "pm2 logs realtime-english --lines 50"
 
 # 3. 浏览器访问
 # 打开 https://realtime.junyaolexiconcom.com
@@ -271,10 +286,10 @@ ping 8.219.239.140
 ls -l ~/.ssh/openai-proxy-key.pem
 
 # 3. 手动登录服务器检查
-ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140
 
 # 4. 查看服务器日志
-ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140 "pm2 logs realtime-english"
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140 "pm2 logs realtime-english"
 ```
 
 ### 服务启动失败
@@ -299,11 +314,11 @@ npm start
 # 如果本地和服务器都有修改,导致冲突
 
 # 方案 1: 保留服务器版本
-ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140 \
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140 \
   "cd ~/openai-realtime-api-nextjs && tar czf ~/backup-$(date +%Y%m%d-%H%M%S).tar.gz ."
 
 rsync -avz -e "ssh -i ~/.ssh/openai-proxy-key.pem" \
-  ubuntu@8.219.239.140:~/openai-realtime-api-nextjs/ \
+  root@8.219.239.140:~/openai-realtime-api-nextjs/ \
   ./temp-server-code/
 
 # 手动合并文件
@@ -326,7 +341,7 @@ git revert <commit-hash>  # 或 git reset --hard <commit-hash>
 cd deployment && ./update-server.sh
 
 # 3. 或者在服务器上回滚(如果有 Git)
-ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140 << 'EOF'
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140 << 'EOF'
 cd ~/openai-realtime-api-nextjs
 git log --oneline
 git reset --hard <previous-commit>
@@ -343,16 +358,16 @@ EOF
 # 每周执行一次
 
 # 1. 查看服务运行时间
-ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140 "pm2 list"
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140 "pm2 list"
 
 # 2. 检查磁盘空间
-ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140 "df -h"
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140 "df -h"
 
 # 3. 检查内存使用
-ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140 "free -m"
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140 "free -m"
 
 # 4. 查看 SSL 证书到期时间
-ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140 "sudo certbot certificates"
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140 "sudo certbot certificates"
 ```
 
 ### 日志管理
@@ -360,7 +375,7 @@ ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140 "sudo certbot certificat
 ```bash
 # PM2 日志会不断增长,定期清理
 
-ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140 << 'EOF'
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140 << 'EOF'
 # 清空日志
 pm2 flush
 
@@ -379,7 +394,7 @@ EOF
 # 1. 启用 Gzip 压缩 (Nginx 已配置)
 
 # 2. 使用 PM2 集群模式
-ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140 << 'EOF'
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140 << 'EOF'
 pm2 delete realtime-english
 pm2 start npm --name "realtime-english" -i max -- start
 pm2 save
@@ -408,14 +423,14 @@ EOF
 | 本地开发测试 | `npm run dev` |
 | Git 提交 | `git add . && git commit -m "message"` |
 | 自动部署 | `cd deployment && ./update-server.sh` |
-| SSH 登录 | `ssh -i ~/.ssh/openai-proxy-key.pem ubuntu@8.219.239.140` |
+| SSH 登录 | `ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140` |
 | 查看日志 | `ssh ... "pm2 logs realtime-english"` |
 | 重启服务 | `ssh ... "pm2 restart realtime-english"` |
 
 ### 文件位置
 
-- **本地项目**: `/home/dministrator/Newproject/realtime-english-teacher`
-- **服务器代码**: `/home/ubuntu/openai-realtime-api-nextjs`
+- **本地项目**: `/home/dministrator/Newproject/realtime-english-teacher-source`
+- **服务器代码**: `/root/openai-realtime-api-nextjs`
 - **SSH 密钥**: `~/.ssh/openai-proxy-key.pem`
 - **部署配置**: `deployment/deployment-config.json`
 - **部署历史**: `deployment/deploy-history.log`
