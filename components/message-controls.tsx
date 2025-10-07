@@ -41,18 +41,70 @@ function exportAsJSON(messages: MessageType[], filename?: string) {
   URL.revokeObjectURL(url)
 }
 
-// 导出日志为纯文本文件（更易读）
+// 导出日志为纯文本文件（简洁版 - 默认）
 function exportAsText(messages: MessageType[], conversation: Conversation[], filename?: string) {
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5)
-  const exportFilename = filename || `conversation-log-${timestamp}.txt`
+  const exportFilename = filename || `conversation-${timestamp}.txt`
 
   let textContent = `AI 英语教练 - 对话记录\n`
+  textContent += `导出时间: ${new Date().toLocaleString('zh-CN')}\n`
+  textContent += `对话轮数: ${conversation.length}\n`
+  textContent += `\n${'='.repeat(60)}\n\n`
+
+  // 对话转录
+  if (conversation.length > 0) {
+    textContent += `📝 对话内容\n\n`
+    conversation.forEach((conv, idx) => {
+      textContent += `[${idx + 1}] ${conv.role === 'user' ? '👤 你' : '🤖 AI'}: ${conv.text}\n\n`
+    })
+    textContent += `${'='.repeat(60)}\n\n`
+  }
+
+  // 只包含关键技术信息
+  const importantTypes = ['error', 'response.function_call_arguments.done', 'conversation.item.created']
+  const importantMessages = messages.filter(msg =>
+    importantTypes.includes(msg.type) ||
+    msg.type.includes('error') ||
+    msg.type.includes('tool')
+  )
+
+  if (importantMessages.length > 0) {
+    textContent += `⚠️ 关键事件 (${importantMessages.length} 条)\n\n`
+    importantMessages.forEach((msg, idx) => {
+      textContent += `[${idx + 1}] ${msg.type}\n`
+      // 只显示关键字段
+      if ('error' in msg && msg.error) {
+        textContent += `错误: ${JSON.stringify(msg.error, null, 2)}\n`
+      }
+      textContent += `${'-'.repeat(60)}\n`
+    })
+  }
+
+  textContent += `\n💡 提示：如需完整技术日志，请点击"导出完整版 (JSON)"\n`
+
+  const dataBlob = new Blob([textContent], { type: 'text/plain;charset=utf-8' })
+  const url = URL.createObjectURL(dataBlob)
+
+  const link = document.createElement('a')
+  link.href = url
+  link.download = exportFilename
+  link.click()
+
+  URL.revokeObjectURL(url)
+}
+
+// 导出完整技术日志（带智能过滤）
+function exportFullLog(messages: MessageType[], conversation: Conversation[], filename?: string) {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5)
+  const exportFilename = filename || `full-log-${timestamp}.txt`
+
+  let textContent = `AI 英语教练 - 完整技术日志\n`
   textContent += `导出时间: ${new Date().toLocaleString('zh-CN')}\n`
   textContent += `消息总数: ${messages.length}\n`
   textContent += `对话轮数: ${conversation.length}\n`
   textContent += `\n${'='.repeat(60)}\n\n`
 
-  // 添加对话转录（更易读）
+  // 对话转录
   if (conversation.length > 0) {
     textContent += `📝 对话转录\n\n`
     conversation.forEach((conv, idx) => {
@@ -61,12 +113,38 @@ function exportAsText(messages: MessageType[], conversation: Conversation[], fil
     textContent += `\n${'='.repeat(60)}\n\n`
   }
 
-  // 添加完整消息日志（技术细节）
+  // 完整消息日志（过滤重复的 session 配置）
   textContent += `📋 完整消息日志\n\n`
+  let lastSessionInstructions = ''
+
   messages.forEach((msg, idx) => {
     textContent += `消息 #${idx + 1}\n`
     textContent += `类型: ${msg.type}\n`
-    textContent += `内容:\n${JSON.stringify(msg, null, 2)}\n`
+
+    // 如果是 session 相关消息，过滤掉重复的 instructions
+    if (msg.type.includes('session') && 'session' in msg) {
+      const msgWithSession = msg as Record<string, unknown>
+      const session = msgWithSession.session as Record<string, unknown> | undefined
+      if (session?.instructions) {
+        const currentInstructions = session.instructions as string
+        if (currentInstructions === lastSessionInstructions) {
+          textContent += `内容: {...session 配置与上次相同，已省略...}\n`
+        } else {
+          lastSessionInstructions = currentInstructions
+          // 截断过长的 instructions
+          const msgCopy = { ...msgWithSession }
+          const sessionCopy = msgCopy.session as Record<string, unknown> | undefined
+          if (sessionCopy?.instructions && typeof sessionCopy.instructions === 'string' && sessionCopy.instructions.length > 500) {
+            sessionCopy.instructions = sessionCopy.instructions.slice(0, 500) + '\n...(已截断，共 ' + currentInstructions.length + ' 字符)'
+          }
+          textContent += `内容:\n${JSON.stringify(msgCopy, null, 2)}\n`
+        }
+      } else {
+        textContent += `内容:\n${JSON.stringify(msg, null, 2)}\n`
+      }
+    } else {
+      textContent += `内容:\n${JSON.stringify(msg, null, 2)}\n`
+    }
     textContent += `${'-'.repeat(60)}\n\n`
   })
 
@@ -128,26 +206,29 @@ function FilterControls({
           size="sm"
           onClick={() => exportAsText(messages, conversation)}
           className="flex-1"
+          title="导出对话转录 + 关键事件（推荐）"
         >
           <FileText className="w-4 h-4 mr-2" />
-          导出为文本 (.txt)
+          简洁版
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => exportFullLog(messages, conversation)}
+          className="flex-1"
+          title="导出完整技术日志（已过滤重复数据）"
+        >
+          <Terminal className="w-4 h-4 mr-2" />
+          完整版
         </Button>
         <Button
           variant="outline"
           size="sm"
           onClick={() => exportAsJSON(messages)}
-          className="flex-1"
+          title="导出原始 JSON 数据"
         >
           <FileJson className="w-4 h-4 mr-2" />
-          导出为 JSON
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => console.log(messages)}
-        >
-          <Terminal className="w-4 h-4 mr-2" />
-          {t('messageControls.log')}
+          JSON
         </Button>
       </div>
     </div>
