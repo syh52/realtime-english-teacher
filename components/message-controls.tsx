@@ -229,6 +229,7 @@ export function MessageControls({ conversation, msgs }: { conversation: Conversa
             </div>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       <Transcriber conversation={conversation.slice(-1)} />
