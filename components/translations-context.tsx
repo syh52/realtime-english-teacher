@@ -5,10 +5,6 @@ import { zh } from '@/lib/translations/zh'
 
 type TranslationValue = string | { [key: string]: TranslationValue }
 
-type Translations = {
-  [key: string]: TranslationValue
-}
-
 type TranslationsContextType = {
   t: (key: string) => string
 }
