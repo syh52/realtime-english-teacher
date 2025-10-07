@@ -21,7 +21,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
 fi
 
 # 从配置文件读取信息
-SERVER_IP=$(jq -r '.publicIp' "$CONFIG_FILE")
+SERVER_IP=$(jq -r '.public_ip' "$CONFIG_FILE")
 SSH_KEY="$HOME/.ssh/openai-proxy-key.pem"
 REMOTE_USER="root"
 REMOTE_DIR="/root/openai-realtime-api-nextjs"
