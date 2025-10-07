@@ -1,151 +1,188 @@
-# Real-time English Teacher
+# AI English Coach
 
-基于 OpenAI Realtime API 的实时英语口语对话练习项目 - 部署到阿里云新加坡
+基于 OpenAI Realtime API 的实时英语口语对话练习项目
 
-## 项目概述
+**🌐 访问地址**: https://realtime.junyaolexiconcom.com
+**📍 服务器**: 阿里云新加坡 (8.219.239.140)
+**✅ 状态**: 运行中
 
-这是一个技术可行性验证项目，测试将 [openai-realtime-api-nextjs](https://github.com/cameronking4/openai-realtime-api-nextjs) 开源项目部署到阿里云新加坡服务器，让中国大陆用户能够正常使用实时语音对话功能。
+---
 
-## 快速开始
+## 📖 项目概述
 
-### 前置要求
+AI English Coach 是一个实时英语口语练习应用，通过 AI 实时语音对话帮助用户提升英语流利度。
 
-1. **阿里云 CLI**
-   ```bash
-   # Ubuntu/Debian
-   curl -sL https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz | tar xzv
-   sudo mv aliyun /usr/local/bin/
+### 核心特性
 
-   # 验证安装
-   aliyun version
-   ```
+- ✅ **实时语音对话**: 基于 OpenAI Realtime API 和 WebRTC
+- ✅ **服务器端代理**: 解决中国大陆访问限制
+- ✅ **多语言支持**: 英语、中文界面切换
+- ✅ **HTTPS 安全**: Let's Encrypt SSL 证书
+- ✅ **响应式设计**: 支持移动端和桌面端
 
-2. **依赖工具**
-   ```bash
-   # jq (JSON 处理)
-   sudo apt-get install -y jq
+### 技术栈
 
-   # git
-   sudo apt-get install -y git
-   ```
+- **前端**: Next.js 15.1.1, React 19, WebRTC, Tailwind CSS
+- **后端**: Next.js API Routes (服务器端代理)
+- **部署**: 阿里云 ECS (ap-southeast-1, ecs.t6-c1m2.large)
+- **Web 服务器**: Nginx 1.18.0
+- **进程管理**: PM2
+- **SSL**: Let's Encrypt (自动续期)
+- **DNS**: Cloudflare
 
-3. **配置信息**
-   - 阿里云 Access Key（已在 `/home/dministrator/Newproject/.env.local`）
-   - OpenAI API Key（已配置）
+---
 
-### 一键部署
+## 🚀 快速开始
 
-```bash
-# Step 1: 配置阿里云 CLI
-cd /home/dministrator/Newproject/realtime-english-teacher/deployment
-chmod +x setup-aliyun-cli.sh
-./setup-aliyun-cli.sh
-
-# Step 2: 运行自动化部署
-chmod +x deploy-to-aliyun.sh
-./deploy-to-aliyun.sh
-```
-
-### 部署后操作
-
-部署完成后，脚本会输出：
-- ECS 实例 ID
-- 公网 IP 地址
-- SSH 登录命令
-
-然后需要手动：
-
-1. **SSH 登录服务器**
-   ```bash
-   ssh ubuntu@<公网IP>
-   # 密码: YourPassword123!
-   ```
-
-2. **配置并启动项目**
-   ```bash
-   cd /home/ubuntu/openai-realtime-api-nextjs
-
-   # 编辑 .env.local，填入 OpenAI API Key
-   nano .env.local
-
-   # 安装依赖并启动
-   npm install
-   npm run dev
-   ```
-
-3. **访问测试**
-   ```
-   http://<公网IP>:3000
-   ```
-
-## 项目结构
-
-```
-realtime-english-teacher/
-├── README.md                              # 本文件
-├── product-brief-Real-time English teacher-2025-10-08.md  # 产品简报
-└── deployment/
-    ├── setup-aliyun-cli.sh               # 配置阿里云 CLI
-    ├── deploy-to-aliyun.sh               # 主部署脚本
-    └── deployment-config.json            # 部署后生成的配置文件
-```
-
-## 技术栈
-
-- **前端**: Next.js + WebRTC
-- **后端**: Node.js + OpenAI Realtime API
-- **部署**: 阿里云 ECS (新加坡)
-- **自动化**: Bash + Aliyun CLI
-
-## 验证指标
-
-- [ ] ECS 实例创建成功
-- [ ] 从中国大陆可以访问
-- [ ] WebRTC 连接延迟 < 500ms
-- [ ] 可以完成 5 分钟连续对话
-- [ ] 成本在预算范围内 (< 500 元)
-
-## 预估成本
-
-- **服务器**: 100-200 元/月 (ecs.t6-c1m1.large, 按量付费)
-- **OpenAI API**: 50-100 元 (测试阶段)
-- **总计**: 200-350 元
-
-## 故障排查
-
-### 无法连接到 ECS
+### 本地开发
 
 ```bash
-# 检查实例状态
-aliyun ecs DescribeInstances --RegionId ap-southeast-1
+# 1. 克隆代码（如果还没有）
+cd /home/dministrator/Newproject/realtime-english-teacher-source
 
-# 检查安全组规则
-aliyun ecs DescribeSecurityGroupAttribute --SecurityGroupId <sg-id> --RegionId ap-southeast-1
-```
+# 2. 安装依赖
+npm install
 
-### 无法启动项目
+# 3. 配置环境变量
+cp .env.example .env.local
+# 编辑 .env.local 添加 OPENAI_API_KEY
 
-```bash
-# 检查 Node.js 版本
-node --version  # 应该是 v20.x
-
-# 检查端口占用
-sudo netstat -tulpn | grep 3000
-
-# 查看日志
+# 4. 启动开发服务器
 npm run dev
+
+# 5. 访问 http://localhost:3000
 ```
 
-## 下一步计划
+### 部署到生产环境
 
-如果验证成功，可以考虑：
-1. 配置域名和 SSL 证书
-2. 使用 PM2 进行进程管理
-3. 添加 Nginx 反向代理
-4. 实现自动化 CI/CD
+```bash
+# 一键部署（本地修改后）
+cd deployment
+./update-server.sh
+```
 
-## 参考文档
+详细的开发工作流请参考：[DEVELOPMENT-WORKFLOW.md](./DEVELOPMENT-WORKFLOW.md)
 
-- [阿里云 CLI 文档](https://help.aliyun.com/zh/cli/)
-- [OpenAI Realtime API 文档](https://platform.openai.com/docs/api-reference/realtime)
-- [原开源项目](https://github.com/cameronking4/openai-realtime-api-nextjs)
+---
+
+## 🌏 中国大陆访问
+
+### 当前方案：服务器端代理
+
+本项目通过**服务器端代理**解决中国大陆访问 OpenAI API 的限制：
+
+```
+浏览器 → 新加坡服务器 → api.openai.com ✅
+```
+
+**优势**：
+- ✅ 用户无需使用代理
+- ✅ API Key 安全存储在服务器端
+- ✅ 统一的访问控制和监控
+
+### 网络优化
+
+如遇到访问缓慢，可以启用 Cloudflare 代理：
+
+1. 登录 Cloudflare Dashboard
+2. 找到 DNS 记录 `realtime.junyaolexiconcom.com`
+3. 将代理状态从"仅 DNS"（灰色云朵）切换为"已代理"（橙色云朵）
+
+**效果**：通过 Cloudflare 全球 CDN 加速，提升中国大陆访问速度
+
+---
+
+## 📚 文档导航
+
+### 新手上路
+1. **README.md**（本文档）- 项目概览和快速开始
+2. **[DEVELOPMENT-WORKFLOW.md](./DEVELOPMENT-WORKFLOW.md)** - 开发工作流指南
+   - 首次设置（Git 配置、SSH 密钥）
+   - 日常开发（本地修改 + 自动部署）
+   - 常见场景示例
+
+### 深入理解
+3. **[CLAUDE.md](./CLAUDE.md)** - 架构和运维详解
+   - 核心设计决策
+   - 服务器端操作
+   - 常见问题排查
+
+4. **[LESSONS-LEARNED.md](./LESSONS-LEARNED.md)** - 经验教训总结
+   - 9 个已知错误/弯路
+   - 6 条可推广原则
+   - 避免重复踩坑
+
+### 历史归档
+5. **[docs/archive/](./docs/archive/)** - 项目初次部署的历史记录（仅供参考）
+
+---
+
+## 🏗️ 项目架构
+
+### 核心设计
+
+本项目基于开源项目 [cameronking4/openai-realtime-api-nextjs](https://github.com/cameronking4/openai-realtime-api-nextjs)，通过**最小修改**实现了中国大陆访问支持：
+
+**原始架构**（中国大陆不可用）：
+```
+浏览器 → api.openai.com (被墙 ❌)
+```
+
+**修改后架构**：
+```
+浏览器 → 服务器 API Routes → api.openai.com ✅
+```
+
+### 代码修改
+
+只修改了 **2 个文件**：
+
+1. **新增**: `app/api/realtime/route.ts` - 服务器端代理
+2. **修改**: `hooks/use-webrtc.ts:440` - 修改 API 端点
+
+详见：[CLAUDE.md - 代码修改详解](./CLAUDE.md#代码修改详解)
+
+---
+
+## 🛠️ 常用命令
+
+| 操作 | 命令 |
+|------|------|
+| 本地开发 | `npm run dev` |
+| 构建生产版本 | `npm run build` |
+| 部署到生产 | `cd deployment && ./update-server.sh` |
+| SSH 登录服务器 | `ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140` |
+| 查看服务状态 | `pm2 status` |
+| 查看服务日志 | `pm2 logs realtime-english` |
+| 重启服务 | `pm2 restart realtime-english` |
+
+---
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+开发流程：
+1. Fork 本仓库
+2. 创建特性分支：`git checkout -b feature/your-feature`
+3. 提交修改：`git commit -m 'Add some feature'`
+4. 推送分支：`git push origin feature/your-feature`
+5. 提交 Pull Request
+
+---
+
+## 📝 许可证
+
+本项目基于 MIT 许可证开源。
+
+---
+
+## 🔗 相关链接
+
+- **在线演示**: https://realtime.junyaolexiconcom.com
+- **原始项目**: https://github.com/cameronking4/openai-realtime-api-nextjs
+- **OpenAI Realtime API**: https://platform.openai.com/docs/api-reference/realtime
+
+---
+
+**最后更新**: 2025-10-08

@@ -37,6 +37,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
    // 修改后: const baseUrl = "/api/realtime";
    ```
 
+详见：[代码修改详解](#代码修改详解)
+
 ## 部署命令
 
 ### 自动化部署
@@ -197,12 +199,14 @@ free -m
 
 ## 参考文档
 
-项目包含完整的技术文档:
+项目核心文档:
 
-- **部署相关**: README.md, QUICK-START.md, DEPLOYMENT-SUCCESS.md
-- **技术方案**: CODE-MODIFICATIONS.md, CHINA-ACCESS-SOLUTIONS.md
-- **经验总结**: POST-MORTEM.md (强烈推荐阅读,包含可推广的方法论)
-- **配置指南**: DNS-SETUP.md
+- **README.md** - 项目概览、快速开始、文档导航
+- **DEVELOPMENT-WORKFLOW.md** - 开发工作流指南（必读）
+- **CLAUDE.md** (本文档) - 架构和运维详解
+- **LESSONS-LEARNED.md** - 经验教训总结（强烈推荐）
+
+历史文档归档: `docs/archive/` (仅供参考)
 
 ## 注意事项
 
@@ -220,3 +224,207 @@ free -m
 4. **最小改动**: 能改 1 行就不改 10 行
 5. **快速验证**: 先做 MVP,验证成功再优化
 6. **成本敏感**: 优先选"够用"的方案,不是"最好"的方案
+
+---
+
+## 代码修改详解
+
+### 问题分析
+
+**原始问题**: 项目采用浏览器直连 OpenAI API 的架构
+
+```
+浏览器 → api.openai.com (被墙 ❌)
+```
+
+**浏览器控制台错误**:
+```
+POST https://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17
+net::ERR_CONNECTION_CLOSED
+```
+
+在中国大陆，`api.openai.com` 无法直接访问，导致功能完全不可用。
+
+### 解决方案
+
+**添加服务器端代理**，让所有 OpenAI API 请求通过服务器转发：
+
+```
+浏览器 → 你的服务器 (新加坡) → api.openai.com ✅
+```
+
+### 修改详情
+
+#### 1. 创建服务器端代理 API
+
+**文件**: `app/api/realtime/route.ts` (新建)
+
+```typescript
+import { NextRequest } from 'next/server';
+
+export async function POST(request: NextRequest) {
+    try {
+        const searchParams = request.nextUrl.searchParams;
+        const model = searchParams.get('model');
+        const voice = searchParams.get('voice');
+
+        if (!process.env.OPENAI_API_KEY) {
+            throw new Error('OPENAI_API_KEY is not set');
+        }
+
+        // 获取请求体（SDP offer）
+        const sdpOffer = await request.text();
+
+        // 从请求头获取 Authorization token
+        const authHeader = request.headers.get('Authorization');
+
+        console.log('Proxying WebRTC request to OpenAI:', { model, voice });
+
+        // 转发到 OpenAI
+        const response = await fetch(
+            `https://api.openai.com/v1/realtime?model=${model}&voice=${voice}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Authorization': authHeader || `Bearer ${process.env.OPENAI_API_KEY}`,
+                    'Content-Type': 'application/sdp',
+                },
+                body: sdpOffer,
+            }
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('OpenAI API error:', response.status, errorText);
+            throw new Error(`OpenAI API request failed: ${response.status}`);
+        }
+
+        // 返回 SDP answer
+        const sdpAnswer = await response.text();
+
+        return new Response(sdpAnswer, {
+            status: 200,
+            headers: {
+                'Content-Type': 'application/sdp',
+            },
+        });
+    } catch (error) {
+        console.error('Realtime proxy error:', error);
+        return new Response(
+            JSON.stringify({ error: 'Failed to proxy realtime request' }),
+            {
+                status: 500,
+                headers: { 'Content-Type': 'application/json' }
+            }
+        );
+    }
+}
+```
+
+**说明**:
+- 这是一个 Next.js API Route
+- 接收浏览器的 WebRTC SDP offer
+- 转发到 OpenAI API
+- 返回 SDP answer 给浏览器
+- 服务器端持有 OpenAI API Key，浏览器端不暴露
+
+#### 2. 修改前端连接逻辑
+
+**文件**: `hooks/use-webrtc.ts`
+
+**修改前** (第 440 行):
+```typescript
+const baseUrl = "https://api.openai.com/v1/realtime";
+```
+
+**修改后**:
+```typescript
+const baseUrl = "/api/realtime";
+```
+
+**说明**:
+- 浏览器不再直连 `api.openai.com`
+- 改为访问相对路径 `/api/realtime`
+- Next.js 自动将其路由到我们的服务器端代理 API
+
+### 关键优势
+
+1. **无需用户代理**: 中国大陆用户可以直接访问
+2. **API Key 安全**: OpenAI API Key 存储在服务器端，不暴露给浏览器
+3. **功能完整**: 所有 WebRTC 实时语音功能正常工作
+4. **性能优良**: 服务器在新加坡，延迟可接受
+5. **维护简单**: 只修改了 2 个文件，改动最小化
+
+### 文件清单
+
+**修改的文件**:
+- `hooks/use-webrtc.ts` (1 行修改)
+
+**新增的文件**:
+- `app/api/realtime/route.ts` (新建)
+
+**备份文件**:
+- `hooks/use-webrtc.ts.backup`
+
+---
+
+## 附录：DNS 配置指南
+
+### 在 Cloudflare 添加 DNS 记录
+
+1. **登录 Cloudflare**: https://dash.cloudflare.com/
+2. **选择域名**: `junyaolexiconcom.com`
+3. **进入 DNS 设置**: 点击左侧菜单 "DNS" → "Records"
+4. **添加 A 记录**:
+
+```
+类型:     A
+名称:     realtime
+内容:     8.219.239.140
+代理状态: 仅 DNS (灰色云朵，关闭代理)
+TTL:      Auto
+```
+
+⚠️ **重要**: 必须选择 "仅 DNS"（灰色云朵），不要使用 Cloudflare 代理（橙色云朵），否则 Let's Encrypt 证书验证会失败。
+
+5. **点击 "保存"**
+
+### 验证 DNS 解析
+
+配置后等待 1-2 分钟，然后运行：
+
+```bash
+# 查询 DNS 记录
+dig +short realtime.junyaolexiconcom.com
+
+# 应该返回: 8.219.239.140
+```
+
+或者使用在线工具: https://dnschecker.org/
+
+### 完成后
+
+DNS 解析正确后，运行 HTTPS 配置脚本：
+
+```bash
+cd deployment
+chmod +x setup-https.sh
+./setup-https.sh
+```
+
+### 故障排除
+
+#### DNS 未解析
+- 等待 DNS 传播（最多 5 分钟）
+- 检查 Cloudflare 中记录是否正确
+- 确认代理状态为 "仅 DNS"（灰色云朵）
+
+#### SSL 证书获取失败
+- 确认 DNS 已正确解析
+- 确认端口 80 和 443 已开放（阿里云安全组）
+- 检查 Nginx 配置: `nginx -t`
+
+#### 服务无法访问
+- 检查 PM2 状态: `pm2 status`
+- 检查 Nginx 日志: `tail -f /var/log/nginx/error.log`
+- 检查防火墙: `ufw status`
