@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Environment variables (IMPORTANT: contains sensitive API keys)
+.env.local
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Deployment configs (contain server IP and credentials)
+deployment/deployment-config.json
+deployment/deploy-history.log
+
+# SSH keys
+*.pem
+*.key
+id_rsa*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+
+# Backups
+*.backup
