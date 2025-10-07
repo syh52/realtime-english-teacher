@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Conversation } from "@/lib/conversations";
-import { useTranslations } from "@/components/translations-context";
+import { COACH_INSTRUCTIONS, SESSION_CONFIG } from "@/config/coach-instructions";
 
 export interface Tool {
   name: string;
@@ -36,7 +36,6 @@ export default function useWebRTCAudioSession(
   voice: string,
   tools?: Tool[],
 ): UseWebRTCAudioSessionReturn {
-  const { t, locale } = useTranslations();
   // Connection/session states
   const [status, setStatus] = useState("");
   const [isSessionActive, setIsSessionActive] = useState(false);
@@ -82,11 +81,16 @@ export default function useWebRTCAudioSession(
    * Configure the data channel on open, sending a session update to the server.
    */
   function configureDataChannel(dataChannel: RTCDataChannel) {
-    // Send session update
+    // Send session update with English coach instructions
     const sessionUpdate = {
       type: "session.update",
       session: {
         modalities: ["text", "audio"],
+        instructions: COACH_INSTRUCTIONS,  // 核心：AI 教练行为指令
+        voice: voice,                      // 声音选择
+        temperature: SESSION_CONFIG.temperature,
+        max_response_output_tokens: SESSION_CONFIG.max_response_output_tokens,
+        turn_detection: SESSION_CONFIG.turn_detection,
         tools: tools || [],
         input_audio_transcription: {
           model: "whisper-1",
@@ -95,24 +99,7 @@ export default function useWebRTCAudioSession(
     };
     dataChannel.send(JSON.stringify(sessionUpdate));
 
-    console.log("Session update sent:", sessionUpdate);
-    console.log("Setting locale: " + t("language") + " : " + locale);
-
-    // Send language preference message
-    const languageMessage = {
-      type: "conversation.item.create",
-      item: {
-        type: "message",
-        role: "user",
-        content: [
-          {
-            type: "input_text",
-            text: t("languagePrompt"),
-          },
-        ],
-      },
-    };
-    dataChannel.send(JSON.stringify(languageMessage));
+    console.log("Session update sent with English coach instructions");
   }
 
   /**

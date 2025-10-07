@@ -4,11 +4,8 @@ import Link from "next/link";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { MobileNav } from "./mobile-nav";
 import { motion } from "framer-motion";
-import { LanguageSwitcher } from "@/components/language-switcher";
-import { useTranslations } from "@/components/translations-context";
 
 export function Header() {
-  const { t } = useTranslations()
   return (
     <motion.header
       initial={{ y: -20, opacity: 0 }}
@@ -29,7 +26,7 @@ export function Header() {
               className="text-lg font-medium tracking-tighter flex gap-1 items-center"
               whileHover={{ scale: 1.02 }}
             >
-              {t('header.logo')}
+              AI 英语教练
             </motion.h1>
           </Link>
         </motion.nav>
@@ -39,7 +36,6 @@ export function Header() {
           transition={{ delay: 0.1 }}
           className="flex gap-3 items-center justify-end ml-auto"
         >
-          <LanguageSwitcher />
           <ThemeSwitcher />
         </motion.div>
       </div>

@@ -7,20 +7,13 @@ export const zh = {
     header: {
         title: "关于",
         about: "AI 英语教练通过 AI 实时语音对话帮助您练习英语口语。开始对话，自然地提升您的英语流利度。",
-        banner: "",
-        bannerLink: "",
-        beta: "",
         dark: "深色",
-        github: "",
-        language: "语言",
         light: "浅色",
         logo: "AI 英语教练",
         system: "系统",
-        theme: "切换主题",
-        twitter: ""
+        theme: "切换主题"
     },
     hero: {
-        badge: "",
         subtitle: "通过 AI 实时语音对话练习英语口语",
         title: "AI 英语教练"
     },
@@ -35,11 +28,10 @@ export const zh = {
     },
     status: {
         error: "哎呀！",
-        info: "正在切换语音助手...",
-        language: "语言已从以下更改",
+        info: "正在连接...",
         session: "会话已建立",
-        success: "我们已经开始直播了！",
-        toggle: "正在切换语音助手..."
+        success: "连接成功，开始对话吧！",
+        toggle: "正在切换..."
     },
     tokenUsage: {
         input: "输入令牌",
@@ -109,7 +101,5 @@ export const zh = {
         coral: "Coral - 清晰友好",
         sage: "Sage - 权威平静",
         verse: "Verse - 富有表现力"
-    },
-    language: "Chinese",
-    languagePrompt: "只用中文说话和回答。你一定要保持你的回答是中文的。如果用户说其他语言，你应该用中文回答。（Speak Chinese only）"
+    }
 }
