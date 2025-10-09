@@ -1,34 +1,50 @@
 import { NextRequest } from 'next/server';
+import { ProxyAgent } from 'undici';
 
 export async function POST(request: NextRequest) {
     try {
         const searchParams = request.nextUrl.searchParams;
         const model = searchParams.get('model');
         const voice = searchParams.get('voice');
-        
+
         if (!process.env.OPENAI_API_KEY) {
             throw new Error('OPENAI_API_KEY is not set');
         }
 
+        // Configure proxy if available
+        const proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY;
+
+        if (proxyUrl) {
+            console.log('[Realtime API] Using proxy:', proxyUrl);
+        }
+
         // 获取请求体（SDP offer）
         const sdpOffer = await request.text();
-        
+
         // 从请求头获取 Authorization token
         const authHeader = request.headers.get('Authorization');
-        
+
         console.log('Proxying WebRTC request to OpenAI:', { model, voice });
+
+        // Use native fetch with proxy through dispatcher (undici style)
+        const fetchOptions: any = {
+            method: 'POST',
+            headers: {
+                'Authorization': authHeader || `Bearer ${process.env.OPENAI_API_KEY}`,
+                'Content-Type': 'application/sdp',
+            },
+            body: sdpOffer,
+        };
+
+        // Add proxy dispatcher for undici (Next.js 15)
+        if (proxyUrl) {
+            fetchOptions.dispatcher = new ProxyAgent(proxyUrl);
+        }
 
         // 转发到 OpenAI
         const response = await fetch(
             `https://api.openai.com/v1/realtime?model=${model}&voice=${voice}`,
-            {
-                method: 'POST',
-                headers: {
-                    'Authorization': authHeader || `Bearer ${process.env.OPENAI_API_KEY}`,
-                    'Content-Type': 'application/sdp',
-                },
-                body: sdpOffer,
-            }
+            fetchOptions
         );
 
         if (!response.ok) {
