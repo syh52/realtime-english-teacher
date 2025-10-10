@@ -93,11 +93,13 @@ export function ChatLayout({
             {conversation.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground py-12">
                 <p className="text-lg font-medium mb-2">
-                  {t('welcome.title') || "Welcome to AI Voice Chat"}
+                  {t('welcome.title')}
                 </p>
-                <p className="text-sm">
-                  {t('welcome.subtitle') || "Click the microphone to start a conversation"}
-                </p>
+                {t('welcome.subtitle') && (
+                  <p className="text-sm">
+                    {t('welcome.subtitle')}
+                  </p>
+                )}
               </div>
             ) : (
               conversation.map((message) => (

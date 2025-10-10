@@ -206,26 +206,26 @@ function FilterControls({
           size="sm"
           onClick={() => exportAsText(messages, conversation)}
           className="flex-1"
-          title="导出对话转录 + 关键事件（推荐）"
+          title="TXT"
         >
           <FileText className="w-4 h-4 mr-2" />
-          简洁版
+          TXT
         </Button>
         <Button
           variant="outline"
           size="sm"
           onClick={() => exportFullLog(messages, conversation)}
           className="flex-1"
-          title="导出完整技术日志（已过滤重复数据）"
+          title="FULL"
         >
           <Terminal className="w-4 h-4 mr-2" />
-          完整版
+          FULL
         </Button>
         <Button
           variant="outline"
           size="sm"
           onClick={() => exportAsJSON(messages)}
-          title="导出原始 JSON 数据"
+          title="JSON"
         >
           <FileJson className="w-4 h-4 mr-2" />
           JSON
@@ -263,10 +263,10 @@ export function MessageControls({ conversation, msgs }: { conversation: Conversa
             variant="outline"
             size="sm"
             onClick={() => exportAsText(msgs, conversation)}
-            title="一键导出对话记录为文本文件"
+            title="EXPORT"
           >
             <Download className="w-4 h-4 mr-1" />
-            导出
+            EXPORT
           </Button>
           <Dialog>
             <DialogTrigger asChild>

@@ -82,20 +82,7 @@ export function VoiceControlPanel({
             </Button>
           )}
 
-          {/* 状态文本 */}
-          {!isSessionActive && (
-            <div className="text-sm text-muted-foreground animate-fade-in">
-              {t('broadcast.clickToStart') || "Click to start speaking"}
-            </div>
-          )}
         </div>
-
-        {/* 提示文本 */}
-        {!isSessionActive && (
-          <p className="text-center text-xs text-muted-foreground mt-4">
-            {t('broadcast.hint') || "Press the microphone to start a conversation"}
-          </p>
-        )}
       </div>
     </div>
   );

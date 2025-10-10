@@ -1,63 +1,63 @@
 export const zh = {
     app: {
-        title: "AI 语音对话"
+        title: "VOICE"
     },
     broadcast: {
-        end: "结束练习",
-        live: "进行中",
-        start: "开始练习",
-        listening: "正在聆听...",
-        clickToStart: "点击开始对话",
-        hint: "按下麦克风开始对话"
+        end: "END",
+        live: "LIVE",
+        start: "START",
+        listening: "REC...",
+        clickToStart: "",
+        hint: ""
     },
     sidebar: {
-        conversations: "对话列表",
-        currentSession: "当前会话"
+        conversations: "历史",
+        currentSession: "NOW"
     },
     voiceSelect: {
-        label: "语音选择"
+        label: "音色"
     },
     theme: {
         label: "主题"
     },
     welcome: {
-        title: "欢迎使用 AI 语音对话",
-        subtitle: "点击麦克风开始对话"
+        title: "准备就绪",
+        subtitle: ""
     },
     header: {
-        title: "关于",
-        about: "AI 英语教练通过 AI 实时语音对话帮助您练习英语口语。开始对话，自然地提升您的英语流利度。",
-        dark: "深色",
-        light: "浅色",
-        logo: "AI 英语教练",
-        system: "系统",
-        theme: "切换主题"
+        title: "INFO",
+        about: "实时语音，即时对话。",
+        dark: "DARK",
+        light: "LIGHT",
+        logo: "VOICE",
+        system: "AUTO",
+        theme: "主题"
     },
     hero: {
-        subtitle: "通过 AI 实时语音对话练习英语口语",
-        title: "AI 英语教练"
+        subtitle: "实时语音对话",
+        title: "VOICE"
     },
     messageControls: {
-        content: "内容",
-        filter: "按类型筛选",
-        log: "控制台日志",
-        logs: "对话记录",
-        search: "搜索消息...",
-        type: "类型",
-        view: "查看日志"
+        content: "DATA",
+        filter: "FILTER",
+        log: "LOG",
+        logs: "LOG",
+        search: "SEARCH...",
+        type: "TYPE",
+        view: "VIEW"
     },
     status: {
-        error: "哎呀！",
-        info: "正在连接...",
-        session: "会话已建立",
-        success: "连接成功，开始对话吧！",
-        toggle: "正在切换..."
+        error: "ERR",
+        info: "CONN...",
+        session: "LINK",
+        success: "LINK",
+        toggle: "WAIT..."
     },
     tokenUsage: {
-        input: "输入令牌",
-        output: "输出令牌",
-        total: "总令牌数",
-        usage: "令牌使用量"
+        input: "IN",
+        output: "OUT",
+        total: "TOTAL",
+        usage: "TOKEN"
     },
     tools: {
         availableTools: {
@@ -115,11 +115,11 @@ export const zh = {
         title: "实时转录"
     },
     voice: {
-        select: "选择语音",
-        ash: "Ash - 温和专业",
-        ballad: "Ballad - 温暖动人",
-        coral: "Coral - 清晰友好",
-        sage: "Sage - 权威平静",
-        verse: "Verse - 富有表现力"
+        select: "选择音色",
+        ash: "Ash - 温和",
+        ballad: "Ballad - 温暖",
+        coral: "Coral - 清晰",
+        sage: "Sage - 平静",
+        verse: "Verse - 表现力"
     }
 }
