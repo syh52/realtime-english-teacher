@@ -10,7 +10,6 @@ import { ConversationSidebar } from "./conversation-sidebar";
 import { VoiceControlPanel } from "./voice-control-panel";
 import { Conversation } from "@/lib/conversations";
 import { useTranslations } from "@/components/translations-context";
-import { MessageControls } from "./message-controls";
 import { TokenUsageDisplay } from "./token-usage";
 import { Message as MessageType } from "@/types";
 
