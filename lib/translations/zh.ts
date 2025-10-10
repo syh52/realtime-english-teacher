@@ -1,8 +1,28 @@
 export const zh = {
+    app: {
+        title: "AI 语音对话"
+    },
     broadcast: {
         end: "结束练习",
         live: "进行中",
-        start: "开始练习"
+        start: "开始练习",
+        listening: "正在聆听...",
+        clickToStart: "点击开始对话",
+        hint: "按下麦克风开始对话"
+    },
+    sidebar: {
+        conversations: "对话列表",
+        currentSession: "当前会话"
+    },
+    voiceSelect: {
+        label: "语音选择"
+    },
+    theme: {
+        label: "主题"
+    },
+    welcome: {
+        title: "欢迎使用 AI 语音对话",
+        subtitle: "点击麦克风开始对话"
     },
     header: {
         title: "关于",

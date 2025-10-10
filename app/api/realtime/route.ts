@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
         console.log('Proxying WebRTC request to OpenAI:', { model, voice });
 
         // Use native fetch with proxy through dispatcher (undici style)
-        const fetchOptions: any = {
+        const fetchOptions: RequestInit & { dispatcher?: ProxyAgent } = {
             method: 'POST',
             headers: {
                 'Authorization': authHeader || `Bearer ${process.env.OPENAI_API_KEY}`,

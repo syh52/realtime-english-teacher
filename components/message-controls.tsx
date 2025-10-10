@@ -239,8 +239,9 @@ export function MessageControls({ conversation, msgs }: { conversation: Conversa
   const { t } = useTranslations();
   const [typeFilter, setTypeFilter] = useState<string>("all")
   const [searchQuery, setSearchQuery] = useState("")
-  
-  if (conversation.length === 0) return null
+
+  // 只要有消息（msgs）就显示，即使没有对话内容也可以查看系统日志
+  // if (conversation.length === 0) return null  // 已移除
 
   // Get unique message types
   const messageTypes = ["all", ...new Set(msgs.map(msg => msg.type))]

@@ -15,7 +15,7 @@ export async function POST() {
         }
 
         // Use native fetch with proxy through dispatcher (undici style)
-        const fetchOptions: any = {
+        const fetchOptions: RequestInit & { dispatcher?: ProxyAgent } = {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,

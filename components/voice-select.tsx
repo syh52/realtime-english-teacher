@@ -5,15 +5,16 @@ import { Label } from "@/components/ui/label"
 interface VoiceSelectorProps {
   value: string
   onValueChange: (value: string) => void
+  disabled?: boolean
 }
 
-export function VoiceSelector({ value, onValueChange }: VoiceSelectorProps) {
+export function VoiceSelector({ value, onValueChange, disabled }: VoiceSelectorProps) {
   const { t } = useTranslations()
   return (
     <div className="form-group space-y-2">
       <Label htmlFor="voiceSelect" className="text-sm font-medium">{t('voice.select')}</Label>
-      <Select value={value} onValueChange={onValueChange}>
-        <SelectTrigger className="w-full">
+      <Select value={value} onValueChange={onValueChange} disabled={disabled}>
+        <SelectTrigger className="w-full" disabled={disabled}>
           <SelectValue placeholder={t('voice.select')} />
         </SelectTrigger>
         <SelectContent>

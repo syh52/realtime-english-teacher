@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/header";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { siteConfig } from "@/config/site";
@@ -38,7 +37,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-dvh bg-background font-sans antialiased",
+          "min-h-screen bg-background font-sans antialiased overflow-hidden",
           geistSans.variable
         )}
       >
@@ -49,11 +48,8 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <TranslationsProvider>
-            <div className="relative flex min-h-dvh flex-col bg-background items-center">
-              <Header />
-              <main className="flex flex-1 justify-center items-start">
-                {children}
-              </main>
+            <div className="relative h-screen flex flex-col bg-background">
+              {children}
             </div>
             <Toaster />
           </TranslationsProvider>
