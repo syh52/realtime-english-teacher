@@ -12,7 +12,7 @@ export function VoiceSelector({ value, onValueChange, disabled }: VoiceSelectorP
   const { t } = useTranslations()
   return (
     <div className="form-group space-y-2">
-      <Label htmlFor="voiceSelect" className="text-sm font-medium">{t('voice.select')}</Label>
+      <Label className="text-sm font-medium">{t('voice.select')}</Label>
       <Select value={value} onValueChange={onValueChange} disabled={disabled}>
         <SelectTrigger className="w-full" disabled={disabled}>
           <SelectValue placeholder={t('voice.select')} />

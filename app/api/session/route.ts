@@ -1,11 +1,24 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { ProxyAgent } from 'undici';
 
-export async function POST() {
+export async function POST(request: NextRequest) {
     try {
         if (!process.env.OPENAI_API_KEY){
             throw new Error(`OPENAI_API_KEY is not set`);
         }
+
+        // Get model from request body (with default fallback)
+        let model = "gpt-4o-realtime-preview-2024-12-17";
+        try {
+            const body = await request.json();
+            if (body.model) {
+                model = body.model;
+            }
+        } catch {
+            // If no body or invalid JSON, use default model
+        }
+
+        console.log('[Session API] Using model:', model);
 
         // Configure proxy if available
         const proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY;
@@ -22,7 +35,7 @@ export async function POST() {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                model: "gpt-4o-realtime-preview-2024-12-17",
+                model: model,
                 voice: "alloy",
                 modalities: ["audio", "text"],
                 instructions:"Start conversation with the user by saying 'Hello, how can I help you today?' Use the available tools when relevant. After executing a tool, you will need to respond (create a subsequent conversation item) to the user sharing the function result or error. If you do not respond with additional message with function result, user will not know you successfully executed the tool. Speak and respond in the language of the user.",

@@ -19,6 +19,8 @@ import { ConnectionState } from "@/hooks/use-webrtc";
 interface ChatLayoutProps {
   voice: string;
   onVoiceChange: (voice: string) => void;
+  model: string;
+  onModelChange: (model: string) => void;
   isSessionActive: boolean;
   connectionState: ConnectionState;
   onToggleSession: () => void;
@@ -32,6 +34,8 @@ interface ChatLayoutProps {
 export function ChatLayout({
   voice,
   onVoiceChange,
+  model,
+  onModelChange,
   isSessionActive,
   connectionState,
   onToggleSession,
@@ -73,6 +77,8 @@ export function ChatLayout({
         <ConversationSidebar
           voice={voice}
           onVoiceChange={onVoiceChange}
+          model={model}
+          onModelChange={onModelChange}
           isSessionActive={isSessionActive}
           sessionManager={sessionManager}
           onCloseSidebar={() => setSidebarOpen(false)}

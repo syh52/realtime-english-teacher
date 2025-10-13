@@ -11,6 +11,9 @@ const App: React.FC = () => {
   // State for voice selection
   const [voice, setVoice] = useState("ash")
 
+  // State for model selection
+  const [model, setModel] = useState("gpt-4o-realtime-preview-2024-12-17")
+
   // Session Manager Hook
   const sessionManager = useSessionManager(voice)
 
@@ -25,7 +28,7 @@ const App: React.FC = () => {
     conversation,
     sendTextMessage,
     clearConversation
-  } = useWebRTCAudioSession(voice, tools)
+  } = useWebRTCAudioSession(voice, model, tools)
 
   // Get all tools functions
   const toolsFunctions = useToolsFunctions();
@@ -109,6 +112,8 @@ const App: React.FC = () => {
     <ChatLayout
       voice={voice}
       onVoiceChange={setVoice}
+      model={model}
+      onModelChange={setModel}
       isSessionActive={isSessionActive}
       connectionState={connectionState}
       onToggleSession={handleToggleSession}

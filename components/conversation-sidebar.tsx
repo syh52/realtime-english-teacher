@@ -2,10 +2,10 @@
 
 import { MessageSquare, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { VoiceSelector } from "@/components/voice-select";
+import { ModelSelector } from "@/components/model-select";
 import { useTranslations } from "@/components/translations-context";
 import { useSessionManager } from "@/hooks/use-session-manager";
 import { formatRelativeTime } from "@/lib/conversations";
@@ -13,6 +13,8 @@ import { formatRelativeTime } from "@/lib/conversations";
 interface ConversationSidebarProps {
   voice: string;
   onVoiceChange: (voice: string) => void;
+  model: string;
+  onModelChange: (model: string) => void;
   isSessionActive: boolean;
   sessionManager: ReturnType<typeof useSessionManager>;
   onCloseSidebar?: () => void;
@@ -21,6 +23,8 @@ interface ConversationSidebarProps {
 export function ConversationSidebar({
   voice,
   onVoiceChange,
+  model,
+  onModelChange,
   isSessionActive,
   sessionManager,
   onCloseSidebar,
@@ -81,7 +85,7 @@ export function ConversationSidebar({
         </Button>
       </div>
 
-      <ScrollArea className="flex-1 px-2">
+      <div className="flex-1 px-2 overflow-y-auto">
         <div className="space-y-1 py-2">
           {sortedSessions.length === 0 ? (
             <div className="text-center py-8 text-sm text-muted-foreground">
@@ -98,57 +102,64 @@ export function ConversationSidebar({
                 <div
                   key={session.id}
                   className={cn(
-                    "w-full text-left px-3 py-2 rounded-lg transition-colors group relative cursor-pointer",
+                    "w-full text-left px-3 py-2 rounded-lg transition-colors group",
                     isActive
                       ? "bg-sidebar-accent text-sidebar-accent-foreground"
                       : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                   )}
-                  onClick={() => handleSelectSession(session.id)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      handleSelectSession(session.id);
-                    }
-                  }}
                 >
-                  <div className="flex items-start gap-2">
-                    <MessageSquare
-                      className={cn(
-                        "h-4 w-4 mt-0.5 flex-shrink-0",
-                        isActive
-                          ? "text-sidebar-accent-foreground"
-                          : "text-muted-foreground group-hover:text-sidebar-accent-foreground"
-                      )}
-                    />
-                    <div className="flex-1 min-w-0 pr-6">
-                      <p className="text-sm font-medium truncate">
-                        {session.title}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {preview}
-                      </p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs text-muted-foreground">
-                          {formatRelativeTime(session.updatedAt)}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          · {session.messageCount} 条
-                        </span>
-                        {session.isArchived && (
-                          <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
-                            已归档
-                          </span>
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => handleSelectSession(session.id)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleSelectSession(session.id);
+                      }
+                    }}
+                  >
+                    <div className="flex items-start gap-2">
+                      <MessageSquare
+                        className={cn(
+                          "h-4 w-4 mt-0.5 flex-shrink-0",
+                          isActive
+                            ? "text-sidebar-accent-foreground"
+                            : "text-muted-foreground group-hover:text-sidebar-accent-foreground"
                         )}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">
+                          {session.title}
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {preview}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-xs text-muted-foreground">
+                            {formatRelativeTime(session.updatedAt)}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            · {session.messageCount} 条
+                          </span>
+                          {session.isArchived && (
+                            <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                              已归档
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
+                  </div>
+                  <div className="flex justify-end mt-2">
                     <button
                       onClick={(e) => handleDeleteSession(session.id, e)}
-                      className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-destructive/10 rounded"
+                      className="text-xs text-muted-foreground hover:text-destructive transition-colors flex items-center gap-1"
                       title="删除对话"
                     >
-                      <Trash2 className="h-3 w-3 text-destructive" />
+                      <Trash2 className="h-3 w-3" />
+                      删除
                     </button>
                   </div>
                 </div>
@@ -156,9 +167,17 @@ export function ConversationSidebar({
             })
           )}
         </div>
-      </ScrollArea>
+      </div>
 
       <div className="p-4 border-t border-sidebar-border space-y-3">
+        <div className="space-y-2">
+          <ModelSelector
+            value={model}
+            onValueChange={onModelChange}
+            disabled={isSessionActive}
+          />
+        </div>
+
         <div className="space-y-2">
           <label className="text-xs font-medium text-sidebar-foreground">
             {t('voiceSelect.label') || "Voice"}
