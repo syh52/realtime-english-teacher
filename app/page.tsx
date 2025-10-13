@@ -11,9 +11,6 @@ const App: React.FC = () => {
   // State for voice selection
   const [voice, setVoice] = useState("ash")
 
-  // 视图模式：active = 正在对话，viewing = 查看历史
-  const [viewMode, setViewMode] = useState<"active" | "viewing">("active")
-
   // Session Manager Hook
   const sessionManager = useSessionManager(voice)
 
@@ -59,16 +56,6 @@ const App: React.FC = () => {
     processedMessageIds.current.clear()
   }, [sessionManager.currentSessionId])
 
-  // 监听会话切换，自动更新视图模式
-  useEffect(() => {
-    const currentSession = sessionManager.getCurrentSession()
-    if (currentSession?.isArchived) {
-      setViewMode("viewing")
-    } else if (currentSession && !currentSession.isArchived) {
-      setViewMode("active")
-    }
-  }, [sessionManager.currentSessionId, sessionManager])
-
   useEffect(() => {
     // Register all functions by iterating over the object
     Object.entries(toolsFunctions).forEach(([name, func]) => {
@@ -97,7 +84,6 @@ const App: React.FC = () => {
       // 停止对话 → 归档当前会话
       handleStartStopClick() // 停止 WebRTC
       sessionManager.archiveCurrentSession()
-      setViewMode("viewing")
       console.log("✅ 对话已停止并归档")
     } else {
       // 开始对话
@@ -108,11 +94,9 @@ const App: React.FC = () => {
         clearConversation() // 🔑 清空 WebRTC 旧对话，防止旧消息泄漏
         processedMessageIds.current.clear() // 清空已处理的消息 ID
         sessionManager.createSession(voice)
-        setViewMode("active")
         console.log("✅ 创建新会话并开始对话")
       } else {
         // 当前会话未归档 → 继续当前会话
-        setViewMode("active")
         console.log("✅ 继续当前会话")
       }
 
@@ -133,7 +117,6 @@ const App: React.FC = () => {
       onSendText={sendTextMessage}
       msgs={msgs}
       sessionManager={sessionManager}
-      viewMode={viewMode}
     />
   )
 }
