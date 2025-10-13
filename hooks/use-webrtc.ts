@@ -483,7 +483,8 @@ export default function useWebRTCAudioSession(
     setIsSessionActive(false);
     setStatus("Session stopped");
     setMsgs([]);
-    setConversation([]);
+    // ✅ 不清空对话历史，让用户可以查看完整对话
+    // setConversation([]);
   }
 
   /**
