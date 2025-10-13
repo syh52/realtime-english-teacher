@@ -14,7 +14,7 @@ interface VoiceControlPanelProps {
   onToggleSession: () => void;
   onSendText?: (text: string) => void;
   status?: string;
-  viewMode: "active" | "viewing";
+  viewMode?: "active" | "viewing"; // 可选参数，保留以便未来扩展
 }
 
 export function VoiceControlPanel({
