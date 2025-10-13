@@ -1,27 +1,73 @@
 "use client";
 
-import { Mic, Square, Send } from "lucide-react";
+import { Mic, Square, Send, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "@/components/translations-context";
 import { TextInput } from "@/components/text-input";
 import { useState } from "react";
+import { ConnectionState } from "@/hooks/use-webrtc";
 
 interface VoiceControlPanelProps {
   isSessionActive: boolean;
+  connectionState: ConnectionState;
   onToggleSession: () => void;
   onSendText?: (text: string) => void;
   status?: string;
+  viewMode: "active" | "viewing";
 }
 
 export function VoiceControlPanel({
   isSessionActive,
+  connectionState,
   onToggleSession,
   onSendText,
   status,
+  viewMode,
 }: VoiceControlPanelProps) {
   const { t } = useTranslations();
   const [showTextInput, setShowTextInput] = useState(false);
+
+  // 根据连接状态决定按钮是否禁用
+  // viewing 模式不禁用按钮，因为点击会创建新对话
+  const isButtonDisabled = connectionState === 'connecting';
+
+  // 获取按钮图标
+  const getButtonIcon = () => {
+    if (connectionState === 'connecting') {
+      return <Loader2 className="h-5 w-5 animate-spin" />;
+    }
+    if (isSessionActive) {
+      return <Square className="h-5 w-5 fill-current" />;
+    }
+    return <Mic className="h-5 w-5" />;
+  };
+
+  // 获取状态显示文本
+  const getStatusText = () => {
+    if (connectionState === 'connecting') {
+      return status || "正在建立连接...";
+    }
+    if (connectionState === 'error') {
+      return status || "连接失败";
+    }
+    if (isSessionActive) {
+      return status || t('broadcast.listening') || "正在聆听...";
+    }
+    // viewing 模式不显示提示
+    return "";
+  };
+
+  // 获取状态颜色
+  const getStatusColor = () => {
+    if (connectionState === 'connecting') {
+      return "text-blue-500";
+    }
+    if (connectionState === 'error') {
+      return "text-destructive";
+    }
+    return "text-muted-foreground";
+  };
 
   return (
     <div className="border-t border-border bg-card">
@@ -40,15 +86,18 @@ export function VoiceControlPanel({
         )}
 
         <div className="flex items-center justify-center gap-4">
-          {/* 录音状态指示器 */}
-          {isSessionActive && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground animate-fade-in">
-              <div className="flex gap-1">
-                <div className="h-3 w-1 bg-primary rounded-full animate-pulse-slow" />
-                <div className="h-3 w-1 bg-primary rounded-full animate-pulse-slow [animation-delay:0.2s]" />
-                <div className="h-3 w-1 bg-primary rounded-full animate-pulse-slow [animation-delay:0.4s]" />
-              </div>
-              <span>{status || t('broadcast.listening') || "Listening..."}</span>
+          {/* 状态指示器 */}
+          {(connectionState !== 'idle' || isSessionActive) && (
+            <div className="flex items-center gap-2 text-sm animate-fade-in">
+              {/* 动画指示器 */}
+              {(connectionState === 'connecting' || isSessionActive) && (
+                <div className="flex gap-1">
+                  <div className="h-3 w-1 bg-primary rounded-full animate-pulse-slow" />
+                  <div className="h-3 w-1 bg-primary rounded-full animate-pulse-slow [animation-delay:0.2s]" />
+                  <div className="h-3 w-1 bg-primary rounded-full animate-pulse-slow [animation-delay:0.4s]" />
+                </div>
+              )}
+              <span className={cn(getStatusColor())}>{getStatusText()}</span>
             </div>
           )}
 
@@ -56,18 +105,16 @@ export function VoiceControlPanel({
           <Button
             size="lg"
             onClick={onToggleSession}
+            disabled={isButtonDisabled}
             className={cn(
               "h-14 w-14 rounded-full shadow-lg transition-all duration-300",
               isSessionActive
                 ? "bg-destructive hover:bg-destructive/90 scale-110"
-                : "bg-primary hover:bg-primary/90"
+                : "bg-primary hover:bg-primary/90",
+              isButtonDisabled && "opacity-70 cursor-not-allowed"
             )}
           >
-            {isSessionActive ? (
-              <Square className="h-5 w-5 fill-current" />
-            ) : (
-              <Mic className="h-5 w-5" />
-            )}
+            {getButtonIcon()}
           </Button>
 
           {/* 文本输入按钮 */}
@@ -81,7 +128,6 @@ export function VoiceControlPanel({
               <Send className="h-4 w-4" />
             </Button>
           )}
-
         </div>
       </div>
     </div>

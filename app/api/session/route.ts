@@ -30,9 +30,13 @@ export async function POST() {
             }),
         };
 
-        // Add proxy dispatcher for undici (Next.js 15)
+        // Add proxy dispatcher with increased timeout for undici (Next.js 15)
         if (proxyUrl) {
-            fetchOptions.dispatcher = new ProxyAgent(proxyUrl);
+            fetchOptions.dispatcher = new ProxyAgent({
+                uri: proxyUrl,
+                // Increase timeout to 30 seconds to handle slow proxy responses
+                connect: { timeout: 30000 },
+            });
         }
 
         const response = await fetch("https://api.openai.com/v1/realtime/sessions", fetchOptions);
@@ -47,6 +51,19 @@ export async function POST() {
         return NextResponse.json(data);
     } catch (error) {
         console.error("Error fetching session data:", error);
-        return NextResponse.json({ error: "Failed to fetch session data" }, { status: 500 });
+
+        // Provide more specific error messages
+        let errorMessage = "Failed to fetch session data";
+        if (error instanceof Error) {
+            if (error.message.includes('timeout') || error.message.includes('ETIMEDOUT')) {
+                errorMessage = "Connection timeout - please check your network or proxy settings";
+            } else if (error.message.includes('ECONNREFUSED')) {
+                errorMessage = "Connection refused - proxy server may not be running";
+            } else {
+                errorMessage = `${errorMessage}: ${error.message}`;
+            }
+        }
+
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }

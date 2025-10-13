@@ -1,7 +1,8 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import useWebRTCAudioSession from "@/hooks/use-webrtc"
+import { useSessionManager } from "@/hooks/use-session-manager"
 import { tools } from "@/lib/tools"
 import { ChatLayout } from "@/components/chat-layout"
 import { useToolsFunctions } from "@/hooks/use-tools"
@@ -10,19 +11,63 @@ const App: React.FC = () => {
   // State for voice selection
   const [voice, setVoice] = useState("ash")
 
+  // 视图模式：active = 正在对话，viewing = 查看历史
+  const [viewMode, setViewMode] = useState<"active" | "viewing">("active")
+
+  // Session Manager Hook
+  const sessionManager = useSessionManager(voice)
+
   // WebRTC Audio Session Hook
   const {
     status,
     isSessionActive,
+    connectionState,
     registerFunction,
     handleStartStopClick,
     msgs,
     conversation,
-    sendTextMessage
+    sendTextMessage,
+    clearConversation
   } = useWebRTCAudioSession(voice, tools)
 
   // Get all tools functions
   const toolsFunctions = useToolsFunctions();
+
+  // Track processed message IDs to avoid duplicates
+  const processedMessageIds = useRef(new Set<string>())
+
+  // Sync WebRTC conversation to current session
+  useEffect(() => {
+    if (!sessionManager.isLoaded) return
+
+    const currentSession = sessionManager.getCurrentSession()
+    // 如果当前会话已归档,不同步消息(防止旧消息泄漏到新会话)
+    if (currentSession?.isArchived) return
+
+    // 添加新消息到当前会话
+    conversation.forEach((message) => {
+      // 只处理 final 状态的消息，避免添加临时消息
+      if (message.isFinal && !processedMessageIds.current.has(message.id)) {
+        sessionManager.addMessageToCurrentSession(message)
+        processedMessageIds.current.add(message.id)
+      }
+    })
+  }, [conversation, sessionManager])
+
+  // Clear processed IDs when session changes
+  useEffect(() => {
+    processedMessageIds.current.clear()
+  }, [sessionManager.currentSessionId])
+
+  // 监听会话切换，自动更新视图模式
+  useEffect(() => {
+    const currentSession = sessionManager.getCurrentSession()
+    if (currentSession?.isArchived) {
+      setViewMode("viewing")
+    } else if (currentSession && !currentSession.isArchived) {
+      setViewMode("active")
+    }
+  }, [sessionManager.currentSessionId, sessionManager])
 
   useEffect(() => {
     // Register all functions by iterating over the object
@@ -40,16 +85,55 @@ const App: React.FC = () => {
     });
   }, [registerFunction, toolsFunctions])
 
+  // 获取当前会话用于显示
+  const currentSession = sessionManager.getCurrentSession()
+  const displayConversation = currentSession?.messages || conversation
+
+  /**
+   * 处理对话开始/停止的包装函数
+   */
+  const handleToggleSession = () => {
+    if (isSessionActive) {
+      // 停止对话 → 归档当前会话
+      handleStartStopClick() // 停止 WebRTC
+      sessionManager.archiveCurrentSession()
+      setViewMode("viewing")
+      console.log("✅ 对话已停止并归档")
+    } else {
+      // 开始对话
+      const current = sessionManager.getCurrentSession()
+
+      if (!current || current.isArchived) {
+        // 如果没有活跃会话，或当前会话已归档 → 创建新会话
+        clearConversation() // 🔑 清空 WebRTC 旧对话，防止旧消息泄漏
+        processedMessageIds.current.clear() // 清空已处理的消息 ID
+        sessionManager.createSession(voice)
+        setViewMode("active")
+        console.log("✅ 创建新会话并开始对话")
+      } else {
+        // 当前会话未归档 → 继续当前会话
+        setViewMode("active")
+        console.log("✅ 继续当前会话")
+      }
+
+      // 开始 WebRTC
+      handleStartStopClick()
+    }
+  }
+
   return (
     <ChatLayout
       voice={voice}
       onVoiceChange={setVoice}
       isSessionActive={isSessionActive}
-      onToggleSession={handleStartStopClick}
-      conversation={conversation}
+      connectionState={connectionState}
+      onToggleSession={handleToggleSession}
+      conversation={displayConversation}
       status={status}
       onSendText={sendTextMessage}
       msgs={msgs}
+      sessionManager={sessionManager}
+      viewMode={viewMode}
     />
   )
 }

@@ -98,9 +98,22 @@ function exportFullLog(messages: MessageType[], conversation: Conversation[], fi
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5)
   const exportFilename = filename || `full-log-${timestamp}.txt`
 
+  // 智能过滤：移除冗余的技术消息
+  const noisyTypes = [
+    'response.audio_transcript.delta',     // 保留 .done 即可
+    'conversation.item.input_audio_transcription.delta',  // 保留 .completed 即可
+    'rate_limits.updated',                 // 速率限制（无分析价值）
+    'output_audio_buffer.started',         // 音频缓冲区事件
+    'output_audio_buffer.stopped',
+    'input_audio_buffer.speech_started',   // 语音检测事件（保留 committed）
+    'input_audio_buffer.speech_stopped',
+  ]
+
+  const filteredMessages = messages.filter(msg => !noisyTypes.includes(msg.type))
+
   let textContent = `AI 英语教练 - 完整技术日志\n`
   textContent += `导出时间: ${new Date().toLocaleString('zh-CN')}\n`
-  textContent += `消息总数: ${messages.length}\n`
+  textContent += `原始消息数: ${messages.length}  →  过滤后: ${filteredMessages.length} (-${messages.length - filteredMessages.length} 条冗余消息)\n`
   textContent += `对话轮数: ${conversation.length}\n`
   textContent += `\n${'='.repeat(60)}\n\n`
 
@@ -114,30 +127,26 @@ function exportFullLog(messages: MessageType[], conversation: Conversation[], fi
   }
 
   // 完整消息日志（过滤重复的 session 配置）
-  textContent += `📋 完整消息日志\n\n`
+  textContent += `📋 完整消息日志（已过滤冗余消息）\n\n`
   let lastSessionInstructions = ''
 
-  messages.forEach((msg, idx) => {
+  filteredMessages.forEach((msg, idx) => {
     textContent += `消息 #${idx + 1}\n`
     textContent += `类型: ${msg.type}\n`
 
-    // 如果是 session 相关消息，过滤掉重复的 instructions
+    // 如果是 session 相关消息，过滤掉重复的完整 session 配置
     if (msg.type.includes('session') && 'session' in msg) {
       const msgWithSession = msg as Record<string, unknown>
       const session = msgWithSession.session as Record<string, unknown> | undefined
       if (session?.instructions) {
         const currentInstructions = session.instructions as string
         if (currentInstructions === lastSessionInstructions) {
+          // 重复的 session 配置，只显示提示
           textContent += `内容: {...session 配置与上次相同，已省略...}\n`
         } else {
+          // 新的 session 配置，完整保留（不截断 instructions！）
           lastSessionInstructions = currentInstructions
-          // 截断过长的 instructions
-          const msgCopy = { ...msgWithSession }
-          const sessionCopy = msgCopy.session as Record<string, unknown> | undefined
-          if (sessionCopy?.instructions && typeof sessionCopy.instructions === 'string' && sessionCopy.instructions.length > 500) {
-            sessionCopy.instructions = sessionCopy.instructions.slice(0, 500) + '\n...(已截断，共 ' + currentInstructions.length + ' 字符)'
-          }
-          textContent += `内容:\n${JSON.stringify(msgCopy, null, 2)}\n`
+          textContent += `内容:\n${JSON.stringify(msgWithSession, null, 2)}\n`
         }
       } else {
         textContent += `内容:\n${JSON.stringify(msg, null, 2)}\n`
@@ -147,6 +156,11 @@ function exportFullLog(messages: MessageType[], conversation: Conversation[], fi
     }
     textContent += `${'-'.repeat(60)}\n\n`
   })
+
+  textContent += `\n💡 提示：\n`
+  textContent += `- 已过滤 ${messages.length - filteredMessages.length} 条冗余消息（增量转录、音频缓冲区事件等）\n`
+  textContent += `- ✅ AI instructions 完整保留（未截断）\n`
+  textContent += `- 如需完整未过滤的原始数据，请使用 JSON 格式导出\n`
 
   const dataBlob = new Blob([textContent], { type: 'text/plain;charset=utf-8' })
   const url = URL.createObjectURL(dataBlob)

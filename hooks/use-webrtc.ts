@@ -12,12 +12,25 @@ export interface Tool {
 }
 
 /**
+ * Connection state enum
+ */
+export type ConnectionState =
+  | 'idle'           // 初始状态
+  | 'connecting'     // 正在建立连接
+  | 'warming_up'     // 连接已建立，音频预热中
+  | 'ready'          // 完全就绪，可以说话
+  | 'stopping'       // 正在停止
+  | 'error';         // 连接失败
+
+/**
  * The return type for the hook, matching Approach A
  * (RefObject<HTMLDivElement | null> for the audioIndicatorRef).
  */
 interface UseWebRTCAudioSessionReturn {
   status: string;
   isSessionActive: boolean;
+  connectionState: ConnectionState;
+  warmupCountdown: number;
   audioIndicatorRef: React.RefObject<HTMLDivElement | null>;
   startSession: () => Promise<void>;
   stopSession: () => void;
@@ -27,6 +40,7 @@ interface UseWebRTCAudioSessionReturn {
   currentVolume: number;
   conversation: Conversation[];
   sendTextMessage: (text: string) => void;
+  clearConversation: () => void;
 }
 
 /**
@@ -39,6 +53,8 @@ export default function useWebRTCAudioSession(
   // Connection/session states
   const [status, setStatus] = useState("");
   const [isSessionActive, setIsSessionActive] = useState(false);
+  const [connectionState, setConnectionState] = useState<ConnectionState>('idle');
+  const [warmupCountdown, setWarmupCountdown] = useState(0);
 
   // Audio references for local mic
   // Approach A: explicitly typed as HTMLDivElement | null
@@ -49,6 +65,9 @@ export default function useWebRTCAudioSession(
   // WebRTC references
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const dataChannelRef = useRef<RTCDataChannel | null>(null);
+
+  // Warmup timer reference
+  const warmupTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Keep track of all raw events/messages
   const [msgs, setMsgs] = useState<any[]>([]);
@@ -312,7 +331,8 @@ export default function useWebRTCAudioSession(
         headers: { "Content-Type": "application/json" },
       });
       if (!response.ok) {
-        throw new Error(`Failed to get ephemeral token: ${response.status}`);
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || `Failed to get ephemeral token: ${response.status}`);
       }
       const data = await response.json();
       return data.client_secret.value;
@@ -368,19 +388,30 @@ export default function useWebRTCAudioSession(
   }
 
   /**
+   * Activate session immediately after connection is established
+   */
+  function activateSession() {
+    console.log("✅ Session activated, ready to listen");
+    setConnectionState('ready');
+    setIsSessionActive(true);
+    setStatus("正在聆听...");
+  }
+
+  /**
    * Start a new session:
    */
   async function startSession() {
     try {
-      setStatus("Requesting microphone access...");
+      setConnectionState('connecting');
+      setStatus("正在获取麦克风权限...");
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       audioStreamRef.current = stream;
       setupAudioVisualization(stream);
 
-      setStatus("Fetching ephemeral token...");
+      setStatus("正在连接服务器...");
       const ephemeralToken = await getEphemeralToken();
 
-      setStatus("Establishing connection...");
+      setStatus("建立实时连接中...");
       const pc = new RTCPeerConnection();
       peerConnectionRef.current = pc;
 
@@ -411,8 +442,11 @@ export default function useWebRTCAudioSession(
       dataChannelRef.current = dataChannel;
 
       dataChannel.onopen = () => {
-        // console.log("Data channel open");
+        console.log("✅ Data channel open, configuring session...");
         configureDataChannel(dataChannel);
+
+        // Activate session immediately
+        activateSession();
       };
       dataChannel.onmessage = handleDataChannelMessage;
 
@@ -439,11 +473,12 @@ export default function useWebRTCAudioSession(
       const answerSdp = await response.text();
       await pc.setRemoteDescription({ type: "answer", sdp: answerSdp });
 
-      setIsSessionActive(true);
-      setStatus("Session established successfully!");
+      // Note: isSessionActive will be set to true after warmup countdown completes
+      console.log("✅ WebRTC connection established, waiting for data channel...");
     } catch (err) {
-      console.error("startSession error:", err);
-      setStatus(`Error: ${err}`);
+      console.error("❌ startSession error:", err);
+      setConnectionState('error');
+      setStatus(`连接失败: ${err instanceof Error ? err.message : String(err)}`);
       stopSession();
     }
   }
@@ -452,6 +487,14 @@ export default function useWebRTCAudioSession(
    * Stop the session & cleanup
    */
   function stopSession() {
+    setConnectionState('stopping');
+
+    // Clear warmup timer
+    if (warmupTimerRef.current) {
+      clearInterval(warmupTimerRef.current);
+      warmupTimerRef.current = null;
+    }
+
     if (dataChannelRef.current) {
       dataChannelRef.current.close();
       dataChannelRef.current = null;
@@ -481,7 +524,9 @@ export default function useWebRTCAudioSession(
 
     setCurrentVolume(0);
     setIsSessionActive(false);
-    setStatus("Session stopped");
+    setConnectionState('idle');
+    setWarmupCountdown(0);
+    setStatus("会话已停止");
     setMsgs([]);
     // ✅ 不清空对话历史，让用户可以查看完整对话
     // setConversation([]);
@@ -508,7 +553,7 @@ export default function useWebRTCAudioSession(
     }
 
     const messageId = uuidv4();
-    
+
     // Add message to conversation immediately
     const newMessage: Conversation = {
       id: messageId,
@@ -518,7 +563,7 @@ export default function useWebRTCAudioSession(
       isFinal: true,
       status: "final",
     };
-    
+
     setConversation(prev => [...prev, newMessage]);
 
     // Send message through data channel
@@ -539,9 +584,21 @@ export default function useWebRTCAudioSession(
     const response = {
       type: "response.create",
     };
-    
+
     dataChannelRef.current.send(JSON.stringify(message));
-    dataChannelRef.current.send(JSON.stringify(response));}
+    dataChannelRef.current.send(JSON.stringify(response));
+  }
+
+  /**
+   * 清空 WebRTC 对话历史
+   * 在创建新会话时调用，确保不会将旧消息带入新会话
+   */
+  function clearConversation() {
+    console.log("🧹 清空 WebRTC 对话历史");
+    setConversation([]);
+    setMsgs([]);
+    ephemeralUserMessageIdRef.current = null;
+  }
 
   // Cleanup on unmount
   useEffect(() => {
@@ -552,6 +609,8 @@ export default function useWebRTCAudioSession(
   return {
     status,
     isSessionActive,
+    connectionState,
+    warmupCountdown,
     audioIndicatorRef,
     startSession,
     stopSession,
@@ -561,5 +620,6 @@ export default function useWebRTCAudioSession(
     currentVolume,
     conversation,
     sendTextMessage,
+    clearConversation,
   };
 }
