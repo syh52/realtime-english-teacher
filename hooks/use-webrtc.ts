@@ -228,12 +228,22 @@ export default function useWebRTCAudioSession(
          */
         case "conversation.item.input_audio_transcription.completed": {
           // console.log("Final user transcription:", msg.transcript);
-          updateEphemeralUserMessage({
-            text: msg.transcript || "",
-            isFinal: true,
-            status: "final",
-          });
-          clearEphemeralUserMessage();
+          // 🔑 关键修复：使用事件中的 item_id 直接定位要更新的消息
+          // 而不是使用 ephemeralUserMessageIdRef，因为可能已经创建了新的临时消息
+          const targetItemId = msg.item_id;
+          setConversation((prev) =>
+            prev.map((message) => {
+              if (message.id === targetItemId) {
+                return {
+                  ...message,
+                  text: msg.transcript || "",
+                  isFinal: true,
+                  status: "final" as const,
+                };
+              }
+              return message;
+            }),
+          );
           break;
         }
 
@@ -277,6 +287,34 @@ export default function useWebRTCAudioSession(
             updated[updated.length - 1].isFinal = true;
             return updated;
           });
+          break;
+        }
+
+        /**
+         * Conversation item created (user message or assistant message)
+         */
+        case "conversation.item.created": {
+          const item = msg.item;
+          // 只处理用户消息（语音输入）
+          if (item.role === "user" && item.type === "message") {
+            // 检查是否已经存在这个 ID 的消息
+            setConversation((prev) => {
+              const exists = prev.some((m) => m.id === item.id);
+              if (!exists) {
+                // 创建新的用户消息（初始为空，等待转录）
+                const newMessage: Conversation = {
+                  id: item.id,
+                  role: "user",
+                  text: "Processing speech...",
+                  timestamp: new Date().toISOString(),
+                  isFinal: false,
+                  status: "processing",
+                };
+                return [...prev, newMessage];
+              }
+              return prev;
+            });
+          }
           break;
         }
 
