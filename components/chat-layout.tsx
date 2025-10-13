@@ -34,11 +34,11 @@ export function ChatLayout({
   onSendText,
   msgs = [],
 }: ChatLayoutProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { t } = useTranslations();
 
   return (
-    <div className="flex h-screen w-full overflow-hidden">
+    <div className="flex h-[100dvh] w-full overflow-hidden">
       {/* 移动端遮罩层 */}
       {sidebarOpen && (
         <div
@@ -89,9 +89,9 @@ export function ChatLayout({
 
         {/* 消息列表 */}
         <ScrollArea className="flex-1 px-4">
-          <div className="max-w-3xl mx-auto py-8 space-y-6">
+          <div className="max-w-3xl mx-auto py-4 md:py-8 space-y-6">
             {conversation.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground py-12">
+              <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground py-6 md:py-12">
                 <p className="text-lg font-medium mb-2">
                   {t('welcome.title')}
                 </p>

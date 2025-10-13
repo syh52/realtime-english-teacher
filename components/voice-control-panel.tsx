@@ -25,7 +25,7 @@ export function VoiceControlPanel({
 
   return (
     <div className="border-t border-border bg-card">
-      <div className="max-w-3xl mx-auto px-4 py-6">
+      <div className="max-w-3xl mx-auto px-4 py-4 md:py-6">
         {/* 文本输入区域 */}
         {isSessionActive && showTextInput && (
           <div className="mb-4">
