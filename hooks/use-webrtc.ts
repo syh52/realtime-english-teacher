@@ -390,32 +390,44 @@ export default function useWebRTCAudioSession(
    * Sets up a local audio visualization for mic input (toggle wave CSS).
    */
   function setupAudioVisualization(stream: MediaStream) {
-    const audioContext = new AudioContext();
-    const source = audioContext.createMediaStreamSource(stream);
-    const analyzer = audioContext.createAnalyser();
-    analyzer.fftSize = 256;
-    source.connect(analyzer);
-
-    // Save analyzer for external use (e.g., waveform visualization)
-    micAnalyserRef.current = analyzer;
-
-    const bufferLength = analyzer.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-
-    const updateIndicator = () => {
-      if (!audioContext) return;
-      analyzer.getByteFrequencyData(dataArray);
-      const average = dataArray.reduce((a, b) => a + b) / bufferLength;
-
-      // Toggle an "active" class if volume is above a threshold
-      if (audioIndicatorRef.current) {
-        audioIndicatorRef.current.classList.toggle("active", average > 30);
+    try {
+      // 兼容性检查：支持标准 AudioContext 和 webkit 前缀版本
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) {
+        console.warn("⚠️ AudioContext not supported in this browser");
+        return;
       }
-      requestAnimationFrame(updateIndicator);
-    };
-    updateIndicator();
 
-    audioContextRef.current = audioContext;
+      const audioContext = new AudioContextClass();
+      const source = audioContext.createMediaStreamSource(stream);
+      const analyzer = audioContext.createAnalyser();
+      analyzer.fftSize = 256;
+      source.connect(analyzer);
+
+      // Save analyzer for external use (e.g., waveform visualization)
+      micAnalyserRef.current = analyzer;
+
+      const bufferLength = analyzer.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+
+      const updateIndicator = () => {
+        if (!audioContext) return;
+        analyzer.getByteFrequencyData(dataArray);
+        const average = dataArray.reduce((a, b) => a + b) / bufferLength;
+
+        // Toggle an "active" class if volume is above a threshold
+        if (audioIndicatorRef.current) {
+          audioIndicatorRef.current.classList.toggle("active", average > 30);
+        }
+        requestAnimationFrame(updateIndicator);
+      };
+      updateIndicator();
+
+      audioContextRef.current = audioContext;
+    } catch (error) {
+      console.error("❌ Failed to setup audio visualization:", error);
+      // 即使可视化失败,也不影响主要功能
+    }
   }
 
   /**
@@ -471,17 +483,28 @@ export default function useWebRTCAudioSession(
         audioEl.srcObject = event.streams[0];
 
         // Optional: measure inbound volume
-        const audioCtx = new (window.AudioContext || window.AudioContext)();
-        const src = audioCtx.createMediaStreamSource(event.streams[0]);
-        const inboundAnalyzer = audioCtx.createAnalyser();
-        inboundAnalyzer.fftSize = 256;
-        src.connect(inboundAnalyzer);
-        analyserRef.current = inboundAnalyzer;
+        try {
+          // 兼容性检查：支持标准 AudioContext 和 webkit 前缀版本
+          const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+          if (AudioContextClass) {
+            const audioCtx = new AudioContextClass();
+            const src = audioCtx.createMediaStreamSource(event.streams[0]);
+            const inboundAnalyzer = audioCtx.createAnalyser();
+            inboundAnalyzer.fftSize = 256;
+            src.connect(inboundAnalyzer);
+            analyserRef.current = inboundAnalyzer;
 
-        // Start volume monitoring
-        volumeIntervalRef.current = window.setInterval(() => {
-          setCurrentVolume(getVolume());
-        }, 100);
+            // Start volume monitoring
+            volumeIntervalRef.current = window.setInterval(() => {
+              setCurrentVolume(getVolume());
+            }, 100);
+          } else {
+            console.warn("⚠️ AudioContext not supported, volume monitoring disabled");
+          }
+        } catch (error) {
+          console.error("❌ Failed to setup volume monitoring:", error);
+          // 音量监控失败不影响音频播放
+        }
       };
 
       // Data channel for transcripts
