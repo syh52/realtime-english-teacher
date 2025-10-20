@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button"
-import Transcriber from "@/components/ui/transcriber"
 import { Conversation } from "@/lib/conversations"
 import {
   Dialog,
@@ -327,8 +326,6 @@ export function MessageControls({ conversation, msgs }: { conversation: Conversa
         </Dialog>
         </div>
       </div>
-
-      <Transcriber conversation={conversation.slice(-1)} />
     </div>
   )
 } 
