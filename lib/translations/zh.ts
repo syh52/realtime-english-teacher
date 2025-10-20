@@ -116,10 +116,15 @@ export const zh = {
     },
     voice: {
         select: "选择音色",
+        // 第二代声音（2024年10月新增）- 更具表现力
         ash: "Ash - 温和",
         ballad: "Ballad - 温暖",
         coral: "Coral - 清晰",
         sage: "Sage - 平静",
-        verse: "Verse - 表现力"
+        verse: "Verse - 表现力",
+        // 第一代声音 - 经典稳定
+        alloy: "Alloy - 中性平衡",
+        echo: "Echo - 温暖男声",
+        shimmer: "Shimmer - 活力女声"
     }
 }
