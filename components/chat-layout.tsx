@@ -206,7 +206,6 @@ export function ChatLayout({
   connectionState,
   onToggleSession,
   conversation,
-  status,
   onSendText,
   msgs = [],
   sessionManager,
