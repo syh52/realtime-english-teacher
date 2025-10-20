@@ -36,7 +36,7 @@ export function OrbStatus({
     if (connectionState === "error") {
       return "连接失败"
     }
-    if (isSessionActive && connectionState === "connected") {
+    if (isSessionActive && connectionState === "ready") {
       return "已连接"
     }
     return "离线"
