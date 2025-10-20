@@ -50,7 +50,7 @@ export function OrbStatus({
     if (connectionState === "error") {
       return "text-destructive"
     }
-    if (isSessionActive && connectionState === "connected") {
+    if (isSessionActive && connectionState === "ready") {
       return "text-green-600"
     }
     return "text-muted-foreground"
