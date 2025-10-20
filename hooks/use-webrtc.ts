@@ -117,6 +117,9 @@ export default function useWebRTCAudioSession(
         input_audio_transcription: {
           model: "whisper-1",
         },
+        output_audio_transcription: {
+          model: "whisper-1",
+        },
       },
     };
     dataChannel.send(JSON.stringify(sessionUpdate));
