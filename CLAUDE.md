@@ -2,429 +2,430 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+---
+
 ## 项目概述
 
-这是一个 OpenAI Realtime API 的部署和代理项目,用于验证实时语音对话在中国大陆的技术可行性。项目已成功部署到阿里云新加坡,通过服务器端代理解决了中国大陆访问 OpenAI API 的网络限制问题。
+这是一个基于 **OpenAI Realtime API** 的实时英语口语对话练习应用 (AI English Coach)。
 
-**访问地址**: https://realtime.junyaolexiconcom.com
-**服务器**: 阿里云新加坡 (8.219.239.140)
-**状态**: ✅ 运行中
+- **在线地址**: https://realtime.junyaolexiconcom.com
+- **服务器**: 阿里云新加坡 ECS (8.219.239.140)
+- **基础项目**: [cameronking4/openai-realtime-api-nextjs](https://github.com/cameronking4/openai-realtime-api-nextjs)
 
-## 核心架构
+---
 
-### 关键设计决策
+## 技术栈
 
-**问题**: 原始项目 `cameronking4/openai-realtime-api-nextjs` 采用浏览器直连 OpenAI API,在中国大陆被墙无法使用。
+- **前端**: Next.js 15.1.1 (App Router), React 19, TypeScript 5
+- **UI 框架**: Tailwind CSS + 52+ Radix UI 组件
+- **实时通信**: WebRTC + OpenAI Realtime API
+- **后端**: Next.js API Routes (服务器端代理)
+- **部署**: 阿里云 ECS + Nginx + PM2
 
-**解决方案**: 添加服务器端代理层
+---
+
+## 核心架构设计
+
+### 1. 服务器端代理架构
+
+**关键创新**: 通过服务器端代理解决中国大陆访问 OpenAI API 的限制
+
 ```
-浏览器 → 新加坡服务器 → api.openai.com
+浏览器 → Next.js API Routes (新加坡服务器) → api.openai.com
 ```
 
-### 代码修改
+**关键代码修改** (仅 2 个文件):
+1. 新增: `app/api/realtime/route.ts` - 服务器端 WebRTC 代理
+2. 修改: `hooks/use-webrtc.ts:452` - API 端点从 `api.openai.com` 改为 `/api/realtime`
 
-项目只修改了 2 个文件即实现了完整功能:
+**代理实现要点**:
+- 使用 `undici` 库的 `ProxyAgent` 支持 HTTP/HTTPS 代理
+- API Key 存储在服务器端 `.env.local` (不暴露给客户端)
+- 转发完整的 WebRTC SDP (Session Description Protocol)
 
-1. **新增**: `app/api/realtime/route.ts` (服务器端代理)
-   - 接收浏览器 WebRTC SDP offer
-   - 转发到 OpenAI Realtime API
-   - 返回 SDP answer 给浏览器
-   - 服务器端持有 `OPENAI_API_KEY`,不暴露给浏览器
+### 2. WebRTC 音频会话管理
 
-2. **修改**: `hooks/use-webrtc.ts` (第 440 行)
-   ```typescript
-   // 修改前: const baseUrl = "https://api.openai.com/v1/realtime";
-   // 修改后: const baseUrl = "/api/realtime";
-   ```
+**核心 Hook**: `hooks/use-webrtc.ts` (20KB, 约 600 行)
 
-详见：[代码修改详解](#代码修改详解)
+主要功能:
+- RTCPeerConnection 生命周期管理
+- 音频流录制和播放
+- 实时文本转录 (临时 + 最终)
+- AI 工具函数调用
+- 音量可视化
 
-## 部署命令
+**关键状态**:
+```typescript
+type ConnectionState = 'idle' | 'connecting' | 'ready' | 'connected';
+```
 
-### 自动化部署
+### 3. 会话管理系统
 
+**核心 Hook**: `hooks/use-session-manager.ts` (8.8KB)
+
+**三层防护机制** - 防止对话泄漏:
+1. **WebRTC 层**: `stopSession()` 时清空历史消息
+2. **同步层**: 检查归档状态，不同步归档对话的消息
+3. **应用层**: `startNewSession()` 创建新会话时清空旧数据
+
+**会话生命周期**:
+```
+创建 → 活跃 → 用户停止 → 归档(只读) → 可查看历史
+```
+
+**数据模型** (`lib/conversations.ts`):
+```typescript
+interface Session {
+  id: string;              // UUID
+  title: string;           // 自动生成标题
+  createdAt: string;       // ISO 8601
+  updatedAt: string;
+  endedAt?: string;        // 归档时设置
+  messages: Conversation[];
+  voice: string;
+  isActive: boolean;
+  isArchived: boolean;     // true = 只读
+}
+
+interface Conversation {
+  id: string;
+  role: "user" | "assistant";
+  text: string;
+  timestamp: string;
+  isFinal: boolean;
+}
+```
+
+**持久化**: localStorage 存储所有会话
+
+### 4. AI 教练指导系统
+
+**配置文件**: `config/coach-instructions.ts` (8.1KB)
+
+包含详细的 AI 行为指导:
+- 教练角色定义
+- 教学风格和互动方式
+- 中英文混合教学策略
+- 对话示例和最佳实践
+
+---
+
+## 常用命令
+
+### 本地开发
 ```bash
-# 一键部署到阿里云新加坡
-cd deployment
-./one-click-deploy.sh
-
-# 单独配置 HTTPS (已部署后执行)
-./setup-https.sh
+npm run dev          # 启动开发服务器 (Turbopack)
+npm run build        # 构建生产版本
+npm start            # 启动生产服务器 (localhost:3000)
+npm run lint         # ESLint 代码检查
 ```
 
-### 服务器端操作
+### 部署到生产环境
+```bash
+# 一键自动部署 (推荐)
+cd deployment
+./update-server.sh
 
+# 脚本自动执行:
+# 1. rsync 同步代码到服务器
+# 2. npm install 安装依赖
+# 3. npm run build 构建
+# 4. pm2 restart 重启服务
+```
+
+### 服务器管理
 ```bash
 # SSH 登录
 ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140
 
-# 查看服务状态
-pm2 status
-pm2 logs realtime-english
-
-# 重启服务
-pm2 restart realtime-english
-
-# 重新构建部署
+# 进入项目目录
 cd ~/openai-realtime-api-nextjs
+
+# PM2 管理
+pm2 status                          # 查看服务状态
+pm2 logs realtime-english           # 查看日志 (实时)
+pm2 logs realtime-english --lines 100  # 查看最近 100 行
+pm2 restart realtime-english        # 重启服务
+pm2 stop realtime-english           # 停止服务
+pm2 start realtime-english          # 启动服务
+
+# Nginx 管理
+sudo systemctl status nginx         # 查看 Nginx 状态
+sudo systemctl restart nginx        # 重启 Nginx
+sudo nginx -t                       # 测试配置文件
+
+# SSL 证书管理
+sudo certbot certificates           # 查看证书状态
+sudo certbot renew --dry-run        # 测试续期 (不实际续期)
+```
+
+---
+
+## 文件结构和关键路径
+
+### 核心业务逻辑
+- `app/page.tsx` - 主应用入口 (集成所有功能)
+- `hooks/use-webrtc.ts` - WebRTC 音频会话管理
+- `hooks/use-session-manager.ts` - 会话生命周期管理
+- `app/api/realtime/route.ts` - OpenAI Realtime 服务器代理
+
+### 数据和配置
+- `lib/conversations.ts` - Session/Conversation 数据模型
+- `lib/tools.ts` - AI 可调用的工具函数定义
+- `config/coach-instructions.ts` - AI 教练核心提示词
+- `config/site.ts` - 网站配置
+
+### UI 组件
+- `components/ui/` - 52+ Radix UI 基础组件
+- `components/chat-layout.tsx` - 主聊天布局
+- `components/conversation-sidebar.tsx` - 历史对话侧边栏
+- `components/voice-control-panel.tsx` - 语音控制面板
+- `components/message-controls.tsx` - 消息操作工具
+
+### 部署和文档
+- `deployment/update-server.sh` - 自动部署脚本
+- `deployment/deployment-config.json` - 服务器配置
+- `DEVELOPMENT-WORKFLOW.md` - 完整的开发工作流指南
+- `LESSONS-LEARNED.md` - 9 个已知错误和经验教训
+
+---
+
+## 开发工作流
+
+### 标准流程
+```bash
+# 1. 本地修改代码
+code hooks/use-webrtc.ts
+
+# 2. 本地测试 (可选)
+npm run dev
+# 访问 http://localhost:3000
+
+# 3. 提交到 Git
+git add .
+git commit -m "描述修改内容"
+
+# 4. 自动部署
+cd deployment
+./update-server.sh
+
+# 5. 验证
+# 访问 https://realtime.junyaolexiconcom.com
+# 检查功能是否正常
+```
+
+### 紧急修复流程
+```bash
+# 1. SSH 登录服务器
+ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140
+
+# 2. 编辑文件
+cd ~/openai-realtime-api-nextjs
+nano <文件路径>
+
+# 3. 重新构建和重启
 npm run build
 pm2 restart realtime-english
-```
 
-### 管理 ECS 实例
-
-```bash
-# 查看实例状态
-aliyun ecs DescribeInstances --RegionId ap-southeast-1
-
-# 停止实例 (保留数据,停止计费)
-aliyun ecs StopInstance --InstanceId i-t4nfgpam8ylkz9jpu6l8
-
-# 启动实例
-aliyun ecs StartInstance --InstanceId i-t4nfgpam8ylkz9jpu6l8
-
-# 删除实例 (永久删除)
-aliyun ecs DeleteInstance --InstanceId i-t4nfgpam8ylkz9jpu6l8 --Force true
-```
-
-## 环境变量
-
-项目依赖以下环境变量 (存储在 `/home/dministrator/Newproject/.env.local`):
-
-```bash
-OPENAI_API_KEY=sk-...                    # OpenAI API 密钥
-ALIYUN_ACCESS_KEY_ID=...                 # 阿里云访问密钥
-ALIYUN_ACCESS_KEY_SECRET=...             # 阿里云访问密钥
-```
-
-服务器端 `.env.local` 文件:
-```bash
-OPENAI_API_KEY=sk-...                    # 必须配置
-```
-
-## 技术栈
-
-- **前端**: Next.js 15.1.1, React 19, WebRTC
-- **后端**: Next.js API Routes (服务器端代理)
-- **部署**: 阿里云 ECS (ap-southeast-1, ecs.t6-c1m2.large)
-- **Web 服务器**: Nginx 1.18.0
-- **进程管理**: PM2
-- **SSL**: Let's Encrypt (自动续期,到期日 2026-01-05)
-- **DNS**: Cloudflare
-
-## WebRTC 必需条件
-
-1. **HTTPS**: 浏览器 `getUserMedia` 只在 HTTPS 或 localhost 可用
-2. **域名**: 需要域名才能申请 SSL 证书
-3. **防火墙**: 确保端口 80, 443, 3000 开放
-4. **CORS**: Next.js API Routes 自动处理
-
-## 关键文件说明
-
-```
-realtime-english-teacher/
-├── README.md                    # 项目说明和部署指南
-├── QUICK-START.md              # 5分钟快速部署指南
-├── PROJECT-SUMMARY.md          # 项目总结和成果
-├── POST-MORTEM.md              # 复盘报告,包含经验教训
-├── CODE-MODIFICATIONS.md       # 代码修改详细说明
-├── DNS-SETUP.md                # DNS 和域名配置
-├── DEPLOYMENT-SUCCESS.md       # 部署成功记录
-├── CHINA-ACCESS-SOLUTIONS.md   # 中国访问方案分析
-├── deployment/
-│   ├── one-click-deploy.sh       # 一键部署脚本 (推荐)
-│   ├── setup-https.sh            # HTTPS 配置脚本
-│   ├── setup-aliyun-cli.sh       # 阿里云 CLI 配置
-│   ├── deploy-to-aliyun.sh       # 基础部署脚本
-│   └── deployment-config.json    # 部署信息 (服务器 IP、域名等)
-└── product-brief-*.md           # 产品简报
-```
-
-## 常见问题排查
-
-### 浏览器连接失败
-
-```bash
-# 1. 检查浏览器控制台错误
-# 查看是否有 CORS、SSL 或 WebRTC 错误
-
-# 2. 检查服务器日志
-ssh -i ~/.ssh/openai-proxy-key.pem root@8.219.239.140
+# 4. 查看日志确认
 pm2 logs realtime-english
 
-# 3. 验证 API Key
-cat ~/openai-realtime-api-nextjs/.env.local
+# ⚠️ 重要: 修改后立即同步回本地并提交 Git
 ```
 
-### SSL 证书问题
+---
 
+## 环境变量配置
+
+### 本地开发 (`.env.local`)
 ```bash
-# 检查证书状态
+OPENAI_API_KEY=sk-...           # OpenAI API 密钥
+```
+
+### 服务器生产环境
+```bash
+# 位置: /root/openai-realtime-api-nextjs/.env.local
+OPENAI_API_KEY=sk-...           # OpenAI API 密钥
+
+# 可选代理配置 (如需要)
+HTTP_PROXY=http://proxy.example.com:8080
+HTTPS_PROXY=http://proxy.example.com:8080
+```
+
+**注意**:
+- 环境变量文件不在 Git 中 (`.gitignore` 已排除)
+- 修改后需要手动同步到服务器
+- 修改后必须重启服务: `pm2 restart realtime-english`
+
+---
+
+## 调试和故障排查
+
+### 查看日志
+```bash
+# 应用日志
+pm2 logs realtime-english
+
+# Nginx 访问日志
+sudo tail -f /var/log/nginx/access.log
+
+# Nginx 错误日志
+sudo tail -f /var/log/nginx/error.log
+
+# 系统日志
+sudo journalctl -u nginx -f
+```
+
+### 常见问题
+
+**1. WebRTC 连接失败**
+- 检查: `pm2 logs realtime-english` 是否有 OpenAI API 错误
+- 检查: `.env.local` 中的 `OPENAI_API_KEY` 是否正确
+- 检查: 网络是否能访问 `api.openai.com` (在服务器上测试)
+
+**2. 部署后服务未启动**
+```bash
+# 查看构建错误
+cd ~/openai-realtime-api-nextjs
+npm run build
+
+# 手动启动查看错误
+npm start
+
+# 检查端口占用
+sudo netstat -tulpn | grep 3000
+```
+
+**3. 历史对话消息泄漏**
+- 检查: `use-session-manager.ts` 的三层防护是否正常
+- 检查: localStorage 中的 `isArchived` 状态
+- 清空浏览器 localStorage 重新测试
+
+**4. SSL 证书过期**
+```bash
+# 查看证书状态
 sudo certbot certificates
 
 # 手动续期
 sudo certbot renew
 
-# 测试 Nginx 配置
-sudo nginx -t
-sudo systemctl reload nginx
+# 重启 Nginx
+sudo systemctl restart nginx
 ```
 
-### 性能优化
+---
 
+## 代码规范和最佳实践
+
+### TypeScript
+- 严格类型检查 (`strict: true`)
+- 所有组件使用 TypeScript
+- 使用路径别名: `@/` 指向项目根目录
+
+### React
+- 优先使用函数组件和 Hooks
+- 使用 `useCallback` 和 `useMemo` 优化性能
+- 状态管理: React Hooks + localStorage 持久化
+
+### 样式
+- Tailwind CSS utility-first
+- 使用 CSS 变量实现主题切换 (深色/浅色模式)
+- 响应式设计: mobile-first
+
+### Git 提交规范
 ```bash
-# 查看 PM2 监控
-pm2 monit
+# 格式: <类型>: <简短描述>
+# 类型: feat, fix, style, refactor, perf, docs, chore
 
-# 查看系统资源
-top
-df -h
-free -m
+git commit -m "feat: Add voice speed control"
+git commit -m "fix: Resolve WebRTC connection timeout"
+git commit -m "style: Update button colors"
 ```
 
-## 成本信息
+---
 
-- **ECS 实例**: ¥150/月 (ecs.t6-c1m2.large, 按量付费)
-- **SSL 证书**: ¥0 (Let's Encrypt 免费)
-- **域名**: ¥0 (已有)
-- **总计**: ¥150/月
+## 性能优化建议
 
-## 项目特点
+### 前端优化
+- Next.js 自动代码分割和懒加载
+- WebRTC 音频流使用 Web Workers (未实现,可优化)
+- localStorage 数据超过 5MB 时提示用户清理
 
-1. **最小化修改**: 只修改 2 个文件即可实现完整功能
-2. **安全**: API Key 存储在服务器端,不暴露给浏览器
-3. **中国友好**: 通过服务器代理解决网络限制,无需用户使用代理
-4. **自动化**: 一键部署脚本完成所有配置
-5. **文档完善**: 详细的部署、修改和复盘文档
+### 后端优化
+- 使用 PM2 cluster 模式 (多进程)
+- Nginx 启用 Gzip 压缩
+- 启用 Nginx 缓存静态资源
+
+### 网络优化
+- 启用 Cloudflare CDN 代理 (可选)
+- 使用 HTTP/2 (Nginx 已配置)
+
+---
+
+## 安全注意事项
+
+1. **API Key 管理**
+   - ✅ API Key 存储在服务器端 `.env.local`
+   - ✅ 不暴露给客户端
+   - ✅ 不提交到 Git
+
+2. **SSH 密钥**
+   - 私钥路径: `~/.ssh/openai-proxy-key.pem`
+   - 权限: `chmod 400`
+
+3. **HTTPS**
+   - Let's Encrypt SSL 证书
+   - 自动续期 (到期日: 2026-01-05)
+   - 强制 HTTPS 重定向
+
+---
+
+## 项目路径映射
+
+| 环境 | 路径 |
+|------|------|
+| 本地开发 | `/home/dministrator/Newproject/realtime-english-teacher-source` |
+| 服务器生产 | `/root/openai-realtime-api-nextjs` |
+| SSH 密钥 | `~/.ssh/openai-proxy-key.pem` |
+| 部署配置 | `deployment/deployment-config.json` |
+
+---
 
 ## 参考文档
 
-项目核心文档:
+### 项目文档 (必读)
+1. `README.md` - 项目概览和快速开始
+2. `DEVELOPMENT-WORKFLOW.md` - 详细的开发工作流 (新手必读)
+3. `LESSONS-LEARNED.md` - 9 个已知错误和避坑指南
 
-- **README.md** - 项目概览、快速开始、文档导航
-- **DEVELOPMENT-WORKFLOW.md** - 开发工作流指南（必读）
-- **CLAUDE.md** (本文档) - 架构和运维详解
-- **LESSONS-LEARNED.md** - 经验教训总结（强烈推荐）
-
-历史文档归档: `docs/archive/` (仅供参考)
-
-## 注意事项
-
-1. **代理设置**: 根据全局 CLAUDE.md,Docker 命令需清除代理环境变量
-2. **SSH 认证**: 使用 SSH key 而非密码 (`~/.ssh/openai-proxy-key.pem`)
-3. **环境文件**: 确保 `.env.local` 配置正确的 `OPENAI_API_KEY`
-4. **证书续期**: Let's Encrypt 证书 90 天有效期,Certbot 已配置自动续期
-5. **防火墙**: 阿里云安全组需开放端口 80, 443, 3000
-
-## 开发原则 (从复盘中提取)
-
-1. **规模匹配**: 个人验证项目使用最简方案,不要过度设计
-2. **架构优先**: 部署前必须分析架构,特别是外部 API 调用
-3. **根因分析**: 看浏览器控制台错误,至少问 3 个"为什么"
-4. **最小改动**: 能改 1 行就不改 10 行
-5. **快速验证**: 先做 MVP,验证成功再优化
-6. **成本敏感**: 优先选"够用"的方案,不是"最好"的方案
+### 技术文档
+- [Next.js 15 文档](https://nextjs.org/docs)
+- [OpenAI Realtime API](https://platform.openai.com/docs/api-reference/realtime)
+- [WebRTC 标准](https://webrtc.org/)
+- [Radix UI](https://www.radix-ui.com/)
 
 ---
 
-## 代码修改详解
+## 重要提醒
 
-### 问题分析
+### ⚠️ 代码来源优先级
+1. ✅ **生产服务器代码** (`root@8.219.239.140:~/openai-realtime-api-nextjs`)
+2. ❌ **开源仓库** (`github.com/cameronking4/openai-realtime-api-nextjs`)
 
-**原始问题**: 项目采用浏览器直连 OpenAI API 的架构
+> 开发时始终基于生产服务器的代码,因为包含已部署的定制化修改
 
-```
-浏览器 → api.openai.com (被墙 ❌)
-```
-
-**浏览器控制台错误**:
-```
-POST https://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17
-net::ERR_CONNECTION_CLOSED
-```
-
-在中国大陆，`api.openai.com` 无法直接访问，导致功能完全不可用。
-
-### 解决方案
-
-**添加服务器端代理**，让所有 OpenAI API 请求通过服务器转发：
-
-```
-浏览器 → 你的服务器 (新加坡) → api.openai.com ✅
+### ⚠️ Git 用户配置
+首次使用 Git 前必须配置:
+```bash
+git config --global user.name "你的名字"
+git config --global user.email "你的邮箱"
 ```
 
-### 修改详情
-
-#### 1. 创建服务器端代理 API
-
-**文件**: `app/api/realtime/route.ts` (新建)
-
-```typescript
-import { NextRequest } from 'next/server';
-
-export async function POST(request: NextRequest) {
-    try {
-        const searchParams = request.nextUrl.searchParams;
-        const model = searchParams.get('model');
-        const voice = searchParams.get('voice');
-
-        if (!process.env.OPENAI_API_KEY) {
-            throw new Error('OPENAI_API_KEY is not set');
-        }
-
-        // 获取请求体（SDP offer）
-        const sdpOffer = await request.text();
-
-        // 从请求头获取 Authorization token
-        const authHeader = request.headers.get('Authorization');
-
-        console.log('Proxying WebRTC request to OpenAI:', { model, voice });
-
-        // 转发到 OpenAI
-        const response = await fetch(
-            `https://api.openai.com/v1/realtime?model=${model}&voice=${voice}`,
-            {
-                method: 'POST',
-                headers: {
-                    'Authorization': authHeader || `Bearer ${process.env.OPENAI_API_KEY}`,
-                    'Content-Type': 'application/sdp',
-                },
-                body: sdpOffer,
-            }
-        );
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('OpenAI API error:', response.status, errorText);
-            throw new Error(`OpenAI API request failed: ${response.status}`);
-        }
-
-        // 返回 SDP answer
-        const sdpAnswer = await response.text();
-
-        return new Response(sdpAnswer, {
-            status: 200,
-            headers: {
-                'Content-Type': 'application/sdp',
-            },
-        });
-    } catch (error) {
-        console.error('Realtime proxy error:', error);
-        return new Response(
-            JSON.stringify({ error: 'Failed to proxy realtime request' }),
-            {
-                status: 500,
-                headers: { 'Content-Type': 'application/json' }
-            }
-        );
-    }
-}
-```
-
-**说明**:
-- 这是一个 Next.js API Route
-- 接收浏览器的 WebRTC SDP offer
-- 转发到 OpenAI API
-- 返回 SDP answer 给浏览器
-- 服务器端持有 OpenAI API Key，浏览器端不暴露
-
-#### 2. 修改前端连接逻辑
-
-**文件**: `hooks/use-webrtc.ts`
-
-**修改前** (第 440 行):
-```typescript
-const baseUrl = "https://api.openai.com/v1/realtime";
-```
-
-**修改后**:
-```typescript
-const baseUrl = "/api/realtime";
-```
-
-**说明**:
-- 浏览器不再直连 `api.openai.com`
-- 改为访问相对路径 `/api/realtime`
-- Next.js 自动将其路由到我们的服务器端代理 API
-
-### 关键优势
-
-1. **无需用户代理**: 中国大陆用户可以直接访问
-2. **API Key 安全**: OpenAI API Key 存储在服务器端，不暴露给浏览器
-3. **功能完整**: 所有 WebRTC 实时语音功能正常工作
-4. **性能优良**: 服务器在新加坡，延迟可接受
-5. **维护简单**: 只修改了 2 个文件，改动最小化
-
-### 文件清单
-
-**修改的文件**:
-- `hooks/use-webrtc.ts` (1 行修改)
-
-**新增的文件**:
-- `app/api/realtime/route.ts` (新建)
-
-**备份文件**:
-- `hooks/use-webrtc.ts.backup`
+### ⚠️ 会话隔离
+- 归档对话是只读的,不能继续对话
+- 新对话会创建新会话,不会包含历史消息
+- 确保三层防护机制正常工作
 
 ---
 
-## 附录：DNS 配置指南
-
-### 在 Cloudflare 添加 DNS 记录
-
-1. **登录 Cloudflare**: https://dash.cloudflare.com/
-2. **选择域名**: `junyaolexiconcom.com`
-3. **进入 DNS 设置**: 点击左侧菜单 "DNS" → "Records"
-4. **添加 A 记录**:
-
-```
-类型:     A
-名称:     realtime
-内容:     8.219.239.140
-代理状态: 仅 DNS (灰色云朵，关闭代理)
-TTL:      Auto
-```
-
-⚠️ **重要**: 必须选择 "仅 DNS"（灰色云朵），不要使用 Cloudflare 代理（橙色云朵），否则 Let's Encrypt 证书验证会失败。
-
-5. **点击 "保存"**
-
-### 验证 DNS 解析
-
-配置后等待 1-2 分钟，然后运行：
-
-```bash
-# 查询 DNS 记录
-dig +short realtime.junyaolexiconcom.com
-
-# 应该返回: 8.219.239.140
-```
-
-或者使用在线工具: https://dnschecker.org/
-
-### 完成后
-
-DNS 解析正确后，运行 HTTPS 配置脚本：
-
-```bash
-cd deployment
-chmod +x setup-https.sh
-./setup-https.sh
-```
-
-### 故障排除
-
-#### DNS 未解析
-- 等待 DNS 传播（最多 5 分钟）
-- 检查 Cloudflare 中记录是否正确
-- 确认代理状态为 "仅 DNS"（灰色云朵）
-
-#### SSL 证书获取失败
-- 确认 DNS 已正确解析
-- 确认端口 80 和 443 已开放（阿里云安全组）
-- 检查 Nginx 配置: `nginx -t`
-
-#### 服务无法访问
-- 检查 PM2 状态: `pm2 status`
-- 检查 Nginx 日志: `tail -f /var/log/nginx/error.log`
-- 检查防火墙: `ufw status`
+**最后更新**: 2025-10-20

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head><title>Create Test Session</title></head>
+<body>
+<button onclick="createSession()">创建测试对话</button>
+<script>
+function createSession() {
+  const sessions = JSON.parse(localStorage.getItem('voice-sessions') || '[]');
+  sessions.push({
+    id: 'test-long-' + Date.now(),
+    title: '可以听到我说话吗？可以听到我说话吗？可以听到我说话吗？这是一个很长的标题',
+    voice: 'ash',
+    messages: [{
+      id: 'm1', role: 'user', text: '可以听到我说话吗？', timestamp: Date.now()
+    }, {
+      id: 'm2', role: 'assistant', text: 'Yes, I can hear you!', timestamp: Date.now()
+    }],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    messageCount: 2
+  });
+  localStorage.setItem('voice-sessions', JSON.stringify(sessions));
+  alert('创建成功！刷新页面');
+}
+</script>
+</body>
+</html>

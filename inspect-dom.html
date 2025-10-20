@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Inspect DOM</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #fff; }
+    pre { background: #2a2a2a; padding: 10px; border-radius: 4px; overflow: auto; }
+    button { padding: 10px 20px; margin: 10px 0; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>DOM Inspector</h1>
+  <button onclick="inspectSidebar()">检查侧边栏结构</button>
+  <pre id="output"></pre>
+  
+  <script>
+    function inspectSidebar() {
+      const output = document.getElementById('output');
+      
+      // 查找所有对话项
+      const sessions = document.querySelectorAll('[role="button"]');
+      
+      let report = '=== 对话列表检查 ===\n\n';
+      
+      sessions.forEach((session, idx) => {
+        const title = session.querySelector('p')?.textContent || 'N/A';
+        const deleteBtn = session.querySelector('button[title="删除对话"]');
+        const flexContainer = session.querySelector('.flex');
+        
+        report += `对话 ${idx + 1}: ${title}\n`;
+        report += `  删除按钮存在: ${!!deleteBtn}\n`;
+        
+        if (deleteBtn) {
+          const btnRect = deleteBtn.getBoundingClientRect();
+          const computed = window.getComputedStyle(deleteBtn);
+          report += `  按钮位置: left=${btnRect.left.toFixed(0)}, top=${btnRect.top.toFixed(0)}, width=${btnRect.width}, height=${btnRect.height}\n`;
+          report += `  按钮可见: ${computed.display !== 'none' && computed.visibility !== 'hidden' && computed.opacity !== '0'}\n`;
+        }
+        
+        if (flexContainer) {
+          const flexRect = flexContainer.getBoundingClientRect();
+          const flexComputed = window.getComputedStyle(flexContainer);
+          report += `  Flex容器宽度: ${flexRect.width.toFixed(0)}px\n`;
+          report += `  Flex容器类名: ${flexContainer.className}\n`;
+        }
+        
+        report += '\n';
+      });
+      
+      output.textContent = report;
+    }
+  </script>
+</body>
+</html>
