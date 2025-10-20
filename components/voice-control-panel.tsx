@@ -7,7 +7,7 @@ import { useTranslations } from "@/components/translations-context";
 import { TextInput } from "@/components/text-input";
 import { useState } from "react";
 import { ConnectionState } from "@/hooks/use-webrtc";
-import { LiveWaveform } from "@/components/ui/live-waveform";
+import { SimpleWaveform } from "@/components/simple-waveform";
 
 interface VoiceControlPanelProps {
   isSessionActive: boolean;
@@ -87,10 +87,9 @@ export function VoiceControlPanel({
         {/* 实时波形显示 */}
         {isSessionActive && (
           <div className="mb-4 w-full max-w-md mx-auto animate-fade-in">
-            <LiveWaveform
+            <SimpleWaveform
               active={isSessionActive}
               height={80}
-              mode="static"
               barColor="hsl(var(--primary))"
               className="rounded-lg border border-border bg-muted/30 p-2"
             />
