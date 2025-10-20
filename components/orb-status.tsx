@@ -58,7 +58,7 @@ export function OrbStatus({
 
   // 获取指示灯样式
   const getIndicatorClass = () => {
-    if (isSessionActive && connectionState === "connected") {
+    if (isSessionActive && connectionState === "ready") {
       return "bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]"
     }
     if (connectionState === "connecting") {
