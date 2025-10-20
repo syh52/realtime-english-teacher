@@ -7,7 +7,7 @@ import { useTranslations } from "@/components/translations-context";
 import { TextInput } from "@/components/text-input";
 import { useState } from "react";
 import { ConnectionState } from "@/hooks/use-webrtc";
-import { SimpleWaveform } from "@/components/simple-waveform";
+import { RealAudioWaveform } from "@/components/real-audio-waveform";
 
 interface VoiceControlPanelProps {
   isSessionActive: boolean;
@@ -15,6 +15,7 @@ interface VoiceControlPanelProps {
   onToggleSession: () => void;
   onSendText?: (text: string) => void;
   status?: string;
+  micAnalyser?: AnalyserNode | null;
 }
 
 export function VoiceControlPanel({
@@ -23,6 +24,7 @@ export function VoiceControlPanel({
   onToggleSession,
   onSendText,
   status,
+  micAnalyser,
 }: VoiceControlPanelProps) {
   const { t } = useTranslations();
   const [showTextInput, setShowTextInput] = useState(false);
@@ -87,8 +89,9 @@ export function VoiceControlPanel({
         {/* 实时波形显示 */}
         {isSessionActive && (
           <div className="mb-4 w-full max-w-md mx-auto animate-fade-in">
-            <SimpleWaveform
+            <RealAudioWaveform
               active={isSessionActive}
+              analyser={micAnalyser}
               height={80}
               barColor="hsl(var(--primary))"
               className="rounded-lg border border-border bg-muted/30 p-2"

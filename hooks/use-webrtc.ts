@@ -41,6 +41,7 @@ interface UseWebRTCAudioSessionReturn {
   conversation: Conversation[];
   sendTextMessage: (text: string) => void;
   clearConversation: () => void;
+  micAnalyser: AnalyserNode | null;
 }
 
 /**
@@ -62,6 +63,7 @@ export default function useWebRTCAudioSession(
   const audioIndicatorRef = useRef<HTMLDivElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioStreamRef = useRef<MediaStream | null>(null);
+  const micAnalyserRef = useRef<AnalyserNode | null>(null);
 
   // WebRTC references
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
@@ -392,6 +394,9 @@ export default function useWebRTCAudioSession(
     analyzer.fftSize = 256;
     source.connect(analyzer);
 
+    // Save analyzer for external use (e.g., waveform visualization)
+    micAnalyserRef.current = analyzer;
+
     const bufferLength = analyzer.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
 
@@ -660,5 +665,6 @@ export default function useWebRTCAudioSession(
     conversation,
     sendTextMessage,
     clearConversation,
+    micAnalyser: micAnalyserRef.current,
   };
 }

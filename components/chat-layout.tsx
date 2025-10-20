@@ -29,6 +29,7 @@ interface ChatLayoutProps {
   onSendText?: (text: string) => void;
   msgs?: MessageType[];
   sessionManager: ReturnType<typeof useSessionManager>;
+  micAnalyser?: AnalyserNode | null;
 }
 
 export function ChatLayout({
@@ -44,6 +45,7 @@ export function ChatLayout({
   onSendText,
   msgs = [],
   sessionManager,
+  micAnalyser,
 }: ChatLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { t } = useTranslations();
@@ -146,6 +148,7 @@ export function ChatLayout({
           onToggleSession={onToggleSession}
           onSendText={onSendText}
           status={status}
+          micAnalyser={micAnalyser}
         />
       </main>
     </div>

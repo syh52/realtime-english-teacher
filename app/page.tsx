@@ -27,7 +27,8 @@ const App: React.FC = () => {
     msgs,
     conversation,
     sendTextMessage,
-    clearConversation
+    clearConversation,
+    micAnalyser
   } = useWebRTCAudioSession(voice, model, tools)
 
   // Get all tools functions
@@ -122,6 +123,7 @@ const App: React.FC = () => {
       onSendText={sendTextMessage}
       msgs={msgs}
       sessionManager={sessionManager}
+      micAnalyser={micAnalyser}
     />
   )
 }
