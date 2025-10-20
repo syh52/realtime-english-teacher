@@ -117,9 +117,6 @@ export default function useWebRTCAudioSession(
         input_audio_transcription: {
           model: "whisper-1",
         },
-        output_audio_transcription: {
-          model: "whisper-1",
-        },
       },
     };
     dataChannel.send(JSON.stringify(sessionUpdate));
@@ -256,18 +253,13 @@ export default function useWebRTCAudioSession(
          * Streaming AI transcripts (assistant partial)
          */
         case "response.audio_transcript.delta": {
-          const newMessage: Conversation = {
-            id: uuidv4(), // generate a fresh ID for each assistant partial
-            role: "assistant",
-            text: msg.delta,
-            timestamp: new Date().toISOString(),
-            isFinal: false,
-          };
+          // 🔑 使用 OpenAI 的 item_id 作为消息 ID，确保同一条消息的所有 delta 共享同一个 ID
+          const itemId = msg.item_id;
 
           setConversation((prev) => {
             const lastMsg = prev[prev.length - 1];
-            if (lastMsg && lastMsg.role === "assistant" && !lastMsg.isFinal) {
-              // Append to existing assistant partial
+            if (lastMsg && lastMsg.id === itemId && !lastMsg.isFinal) {
+              // Append to existing assistant partial (same item_id)
               const updated = [...prev];
               updated[updated.length - 1] = {
                 ...lastMsg,
@@ -275,7 +267,14 @@ export default function useWebRTCAudioSession(
               };
               return updated;
             } else {
-              // Start a new assistant partial
+              // Start a new assistant partial with item_id
+              const newMessage: Conversation = {
+                id: itemId,  // 使用 OpenAI 的 item_id
+                role: "assistant",
+                text: msg.delta,
+                timestamp: new Date().toISOString(),
+                isFinal: false,
+              };
               return [...prev, newMessage];
             }
           });
