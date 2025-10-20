@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from "react"
 import useWebRTCAudioSession from "@/hooks/use-webrtc"
 import { useSessionManager } from "@/hooks/use-session-manager"
+import { useAudioVolume } from "@/hooks/use-audio-volume"
 import { tools } from "@/lib/tools"
 import { ChatLayout } from "@/components/chat-layout"
 import { useToolsFunctions } from "@/hooks/use-tools"
@@ -33,6 +34,9 @@ const App: React.FC = () => {
 
   // Get all tools functions
   const toolsFunctions = useToolsFunctions();
+
+  // Audio volume hook for Orb visualization
+  const { getInputVolume, getOutputVolume } = useAudioVolume(micAnalyser);
 
   // Track processed message IDs to avoid duplicates
   const processedMessageIds = useRef(new Set<string>())
@@ -124,6 +128,8 @@ const App: React.FC = () => {
       msgs={msgs}
       sessionManager={sessionManager}
       micAnalyser={micAnalyser}
+      getInputVolume={getInputVolume}
+      getOutputVolume={getOutputVolume}
     />
   )
 }
