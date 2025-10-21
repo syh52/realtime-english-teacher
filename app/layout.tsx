@@ -38,7 +38,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased overflow-hidden",
+          "min-h-screen bg-background font-sans antialiased",
           geistSans.variable
         )}
       >
@@ -49,7 +49,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <TranslationsProvider>
-            <div className="relative h-screen flex flex-col bg-background">
+            <div className="relative min-h-screen flex flex-col bg-background">
               <Header />
               {children}
             </div>
