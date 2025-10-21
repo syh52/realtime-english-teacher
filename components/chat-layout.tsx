@@ -242,7 +242,7 @@ export function ChatLayout({
   };
 
   return (
-    <div className="flex h-[100dvh] w-full overflow-hidden">
+    <div className="flex h-[calc(100dvh-4rem)] w-full overflow-hidden">
       {/* 移动端遮罩层 */}
       {sidebarOpen && (
         <div
