@@ -19,7 +19,7 @@ export function Header() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="max-md:hidden flex items-center"
+          className="max-md:hidden flex items-center gap-6"
         >
           <Link href="/" className="flex gap-3 items-center">
             <motion.h1
@@ -28,6 +28,12 @@ export function Header() {
             >
               AI 英语教练
             </motion.h1>
+          </Link>
+          <Link
+            href="/text-to-speech"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            文字转语音
           </Link>
         </motion.nav>
         <motion.div
