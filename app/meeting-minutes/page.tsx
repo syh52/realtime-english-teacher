@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import { useMeetingMinutes } from '@/hooks/use-meeting-minutes';
-import { Meeting, ActionItem } from '@/types/meeting-minutes';
+import { Meeting } from '@/types/meeting-minutes';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -43,7 +43,6 @@ export default function MeetingMinutesPage() {
     toggleActionItem,
     deleteMeeting,
     clearAllMeetings,
-    reset,
   } = useMeetingMinutes();
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);

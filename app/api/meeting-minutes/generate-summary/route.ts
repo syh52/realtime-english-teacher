@@ -119,8 +119,8 @@ export async function POST(request: NextRequest) {
     let parsedSummary: MeetingSummary;
     try {
       parsedSummary = JSON.parse(summaryText);
-    } catch (parseError) {
-      console.error('[GenerateSummary] Failed to parse GPT-4 response:', summaryText);
+    } catch (error) {
+      console.error('[GenerateSummary] Failed to parse GPT-4 response:', summaryText, error);
       throw new Error('Failed to parse summary JSON');
     }
 
