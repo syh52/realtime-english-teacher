@@ -35,6 +35,12 @@ export function Header() {
           >
             文字转语音
           </Link>
+          <Link
+            href="/meeting-minutes"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            会议纪要
+          </Link>
         </motion.nav>
         <motion.div
           initial={{ opacity: 0, x: 20 }}
