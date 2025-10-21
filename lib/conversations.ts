@@ -89,7 +89,7 @@ export function formatRelativeTime(timestamp: string): string {
 /**
  * 创建新会话
  */
-export function createNewSession(voice: string = 'ash'): Session {
+export function createNewSession(voice: string = 'alloy'): Session {
   // 使用 crypto.randomUUID() 代替 uuid 库
   const id = crypto.randomUUID();
   const now = new Date().toISOString();
