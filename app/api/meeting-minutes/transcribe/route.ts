@@ -104,10 +104,5 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// 配置 API 路由以支持大文件上传
-export const config = {
-  api: {
-    bodyParser: false, // 禁用默认的 body parser
-    responseLimit: false, // 禁用响应大小限制
-  },
-};
+// Next.js 15 App Router 配置
+export const maxDuration = 300; // 最大执行时间 5 分钟（转录可能需要较长时间）
