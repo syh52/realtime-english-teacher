@@ -10,7 +10,7 @@ import { useToolsFunctions } from "@/hooks/use-tools"
 
 const App: React.FC = () => {
   // State for voice selection
-  const [voice, setVoice] = useState("ash")
+  const [voice, setVoice] = useState("alloy")
 
   // State for model selection
   const [model, setModel] = useState("gpt-4o-realtime-preview-2024-12-17")
