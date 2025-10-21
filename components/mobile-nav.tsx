@@ -46,6 +46,24 @@ export function MobileNav() {
           <p className="mt-2 text-muted-foreground text-start text-lg">
             {t('header.about')}
           </p>
+          <div className="mt-6 w-full space-y-2">
+            <Link
+              href="/text-to-speech"
+              onClick={() => setOpen(false)}
+              className="block w-full p-3 text-left rounded-lg hover:bg-accent transition-colors"
+            >
+              <div className="font-medium">文字转语音</div>
+              <div className="text-sm text-muted-foreground">将文本转换为高质量语音</div>
+            </Link>
+            <Link
+              href="/meeting-minutes"
+              onClick={() => setOpen(false)}
+              className="block w-full p-3 text-left rounded-lg hover:bg-accent transition-colors"
+            >
+              <div className="font-medium">会议纪要</div>
+              <div className="text-sm text-muted-foreground">自动生成会议记录和摘要</div>
+            </Link>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
