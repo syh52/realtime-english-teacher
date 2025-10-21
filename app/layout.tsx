@@ -7,6 +7,7 @@ import { siteConfig } from "@/config/site";
 import { Toaster } from "@/components/ui/sonner"
 import { Analytics } from "@vercel/analytics/react"
 import { TranslationsProvider } from "@/components/translations-context"
+import { Header } from "@/components/header"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,6 +50,7 @@ export default function RootLayout({
         >
           <TranslationsProvider>
             <div className="relative h-screen flex flex-col bg-background">
+              <Header />
               {children}
             </div>
             <Toaster />
