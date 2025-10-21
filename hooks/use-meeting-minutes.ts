@@ -135,8 +135,21 @@ export function useMeetingMinutes() {
       });
 
       if (!transcribeResponse.ok) {
-        const errorData = await transcribeResponse.json();
-        throw new Error(errorData.error || '转录失败');
+        let errorMessage = '转录失败';
+        try {
+          const contentType = transcribeResponse.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const errorData = await transcribeResponse.json();
+            errorMessage = errorData.error || errorMessage;
+          } else {
+            const textError = await transcribeResponse.text();
+            console.error('[MeetingMinutes] Transcribe API returned non-JSON error:', textError.substring(0, 200));
+            errorMessage = `转录服务器错误 (${transcribeResponse.status})`;
+          }
+        } catch (e) {
+          console.error('[MeetingMinutes] Failed to parse transcribe error response:', e);
+        }
+        throw new Error(errorMessage);
       }
 
       const transcribeResult: TranscribeResponse = await transcribeResponse.json();
@@ -166,8 +179,21 @@ export function useMeetingMinutes() {
       });
 
       if (!summaryResponse.ok) {
-        const errorData = await summaryResponse.json();
-        throw new Error(errorData.error || '生成摘要失败');
+        let errorMessage = '生成摘要失败';
+        try {
+          const contentType = summaryResponse.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const errorData = await summaryResponse.json();
+            errorMessage = errorData.error || errorMessage;
+          } else {
+            const textError = await summaryResponse.text();
+            console.error('[MeetingMinutes] API returned non-JSON error:', textError.substring(0, 200));
+            errorMessage = `服务器错误 (${summaryResponse.status})`;
+          }
+        } catch (e) {
+          console.error('[MeetingMinutes] Failed to parse error response:', e);
+        }
+        throw new Error(errorMessage);
       }
 
       const summaryResult: GenerateSummaryResponse = await summaryResponse.json();
