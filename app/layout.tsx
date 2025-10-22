@@ -10,6 +10,7 @@ import { TranslationsProvider } from "@/components/translations-context"
 import { Header } from "@/components/header"
 import { OfflineIndicator } from "@/components/offline-indicator"
 import { PWAInstallPrompt } from "@/components/pwa-install-prompt"
+import { PWALifecycle } from "@/components/pwa-lifecycle"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -73,6 +74,7 @@ export default function RootLayout({
             <Toaster />
             <OfflineIndicator />
             <PWAInstallPrompt />
+            <PWALifecycle />
           </TranslationsProvider>
         </ThemeProvider>
         <Analytics />
