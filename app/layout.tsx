@@ -8,6 +8,8 @@ import { Toaster } from "@/components/ui/sonner"
 import { Analytics } from "@vercel/analytics/react"
 import { TranslationsProvider } from "@/components/translations-context"
 import { Header } from "@/components/header"
+import { OfflineIndicator } from "@/components/offline-indicator"
+import { PWAInstallPrompt } from "@/components/pwa-install-prompt"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,8 +27,23 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: "/favicon.ico",
+    apple: "/icons/icon-192x192.png",
   },
   keywords: ["AI English Coach", "English speaking practice", "AI voice conversation", "English learning", "Real-time AI", "Voice AI", "English teacher", "Speaking practice", "AI tutor"],
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "AI English Coach",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+  },
 };
 
 export default function RootLayout({
@@ -54,6 +71,8 @@ export default function RootLayout({
               {children}
             </div>
             <Toaster />
+            <OfflineIndicator />
+            <PWAInstallPrompt />
           </TranslationsProvider>
         </ThemeProvider>
         <Analytics />
