@@ -46,13 +46,14 @@ export default withPWA({
     },
     {
       urlPattern: /\.(?:jpg|jpeg|gif|png|svg|ico|webp)$/i,
-      handler: "StaleWhileRevalidate",
+      handler: "NetworkFirst", // 改为优先使用网络，确保图标及时更新
       options: {
-        cacheName: "static-image-assets",
+        cacheName: "static-image-assets-v2", // 改变缓存名称，强制刷新
         expiration: {
           maxEntries: 64,
           maxAgeSeconds: 24 * 60 * 60, // 24 hours
         },
+        networkTimeoutSeconds: 3, // 3秒网络超时后使用缓存
       },
     },
     {
