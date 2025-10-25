@@ -10,7 +10,19 @@ export default withPWA({
   register: true,
   skipWaiting: true,
   disable: process.env.NODE_ENV === "development",
+  // 强制 Service Worker 立即激活并更新
+  cacheOnFrontEndNav: false,
+  buildExcludes: [/middleware-manifest\.json$/],
   runtimeCaching: [
+    // manifest.json 和图标文件 - 始终从网络获取
+    {
+      urlPattern: /^https?:\/\/.*\/manifest\.json$/,
+      handler: "NetworkOnly",
+    },
+    {
+      urlPattern: /^https?:\/\/.*\/icons\/.*\.(png|svg|ico)$/,
+      handler: "NetworkOnly", // 完全不缓存图标，强制从网络获取
+    },
     {
       urlPattern: /^https:\/\/fonts\.(?:gstatic)\.com\/.*/i,
       handler: "CacheFirst",
@@ -45,15 +57,23 @@ export default withPWA({
       },
     },
     {
-      urlPattern: /\.(?:jpg|jpeg|gif|png|svg|ico|webp)$/i,
-      handler: "NetworkFirst", // 改为优先使用网络，确保图标及时更新
+      urlPattern: ({ url }) => {
+        const pathname = url.pathname;
+        // 排除图标文件，图标由上面的 NetworkOnly 规则处理
+        if (pathname.includes('/icons/') || pathname === '/manifest.json') {
+          return false;
+        }
+        // 其他图片资源
+        return /\.(?:jpg|jpeg|gif|png|svg|ico|webp)$/i.test(pathname);
+      },
+      handler: "NetworkFirst",
       options: {
-        cacheName: "static-image-assets-v2", // 改变缓存名称，强制刷新
+        cacheName: "static-image-assets-v3", // v3 - 新版本缓存
         expiration: {
           maxEntries: 64,
           maxAgeSeconds: 24 * 60 * 60, // 24 hours
         },
-        networkTimeoutSeconds: 3, // 3秒网络超时后使用缓存
+        networkTimeoutSeconds: 3,
       },
     },
     {
