@@ -11,7 +11,6 @@ export default withPWA({
   skipWaiting: true,
   disable: process.env.NODE_ENV === "development",
   // 强制 Service Worker 立即激活并更新
-  cacheOnFrontEndNav: false,
   buildExcludes: [/middleware-manifest\.json$/],
   runtimeCaching: [
     // manifest.json 和图标文件 - 始终从网络获取
