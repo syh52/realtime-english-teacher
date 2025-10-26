@@ -101,7 +101,7 @@ export function ScenarioSelector({
 
       {/* 按分类展示场景 */}
       {Object.entries(scenariosByCategory).map(([category, scenarios]) => {
-        const categoryInfo = getCategoryName(category as any)
+        const categoryInfo = getCategoryName(category as 'conflict' | 'communication' | 'emergency' | 'routine')
         return (
           <Card key={category}>
             <CardHeader>
