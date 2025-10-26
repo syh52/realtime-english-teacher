@@ -17,8 +17,8 @@ const App: React.FC = () => {
   // State for voice selection
   const [voice, setVoice] = useState("alloy")
 
-  // State for model selection
-  const [model, setModel] = useState("gpt-4o-realtime-preview-2024-12-17")
+  // State for model selection (使用最新的 gpt-realtime 模型)
+  const [model, setModel] = useState("gpt-realtime")
 
   // State to control whether to show scenario selector
   const [showScenarioSelector, setShowScenarioSelector] = useState(true)

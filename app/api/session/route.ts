@@ -7,8 +7,8 @@ export async function POST(request: NextRequest) {
             throw new Error(`OPENAI_API_KEY is not set`);
         }
 
-        // Get model from request body (with default fallback)
-        let model = "gpt-4o-realtime-preview-2024-12-17";
+        // Get model from request body (with default fallback to latest gpt-realtime)
+        let model = "gpt-realtime";
         try {
             const body = await request.json();
             if (body.model) {
