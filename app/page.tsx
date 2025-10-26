@@ -20,6 +20,9 @@ const App: React.FC = () => {
   // State for model selection
   const [model, setModel] = useState("gpt-4o-realtime-preview-2024-12-17")
 
+  // State to control whether to show scenario selector
+  const [showScenarioSelector, setShowScenarioSelector] = useState(true)
+
   // Session Manager Hook
   const sessionManager = useSessionManager(voice)
 
@@ -141,6 +144,9 @@ const App: React.FC = () => {
     // 进入场景模式
     scenarioMode.startScenario(scenarioId)
 
+    // 隐藏场景选择器，显示聊天界面
+    setShowScenarioSelector(false)
+
     console.log(`✅ 开始场景训练: ${scenarioId}`)
   }
 
@@ -150,36 +156,51 @@ const App: React.FC = () => {
   const handleStartFreeMode = () => {
     // 退出场景模式（使用默认提示词）
     scenarioMode.exitScenarioMode()
+
+    // 隐藏场景选择器，显示聊天界面
+    setShowScenarioSelector(false)
+
     console.log("✅ 开始自由对话模式")
   }
 
   // 渲染逻辑：
-  // 1. 如果在场景模式且已选择场景 → 显示聊天界面 + 返回按钮
-  // 2. 否则 → 显示场景选择器
-  if (scenarioMode.isScenarioMode && scenarioMode.selectedScenario) {
+  // 1. 如果显示场景选择器 → 显示 ScenarioSelector
+  // 2. 否则 → 显示聊天界面（可能是场景模式或自由模式）
+  if (showScenarioSelector) {
     return (
-      <div className="relative w-full h-screen">
-        {/* 返回按钮（左上角） */}
-        <Button
-          variant="outline"
-          size="sm"
-          className="absolute top-4 left-4 z-50"
-          onClick={() => {
-            if (isSessionActive) {
-              // 如果正在对话，先停止
-              handleToggleSession()
-            } else {
-              // 直接返回场景选择
-              scenarioMode.exitScenarioMode()
-            }
-          }}
-          disabled={isSessionActive}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          {isSessionActive ? '请先结束对话' : '返回场景选择'}
-        </Button>
+      <ScenarioSelector
+        onSelectScenario={handleSelectScenario}
+        onStartFreeMode={handleStartFreeMode}
+      />
+    )
+  }
 
-        {/* 场景标题指示器 */}
+  // 聊天界面（场景模式或自由模式）
+  return (
+    <div className="relative w-full h-screen">
+      {/* 返回按钮（左上角） */}
+      <Button
+        variant="outline"
+        size="sm"
+        className="absolute top-4 left-4 z-50"
+        onClick={() => {
+          if (isSessionActive) {
+            // 如果正在对话，先停止
+            handleToggleSession()
+          } else {
+            // 退出场景模式并返回场景选择
+            scenarioMode.exitScenarioMode()
+            setShowScenarioSelector(true)
+          }
+        }}
+        disabled={isSessionActive}
+      >
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        {isSessionActive ? '请先结束对话' : '返回场景选择'}
+      </Button>
+
+      {/* 场景标题指示器（仅在场景模式下显示） */}
+      {scenarioMode.isScenarioMode && scenarioMode.selectedScenario && (
         <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50">
           <div className="bg-background/95 backdrop-blur-sm border rounded-lg px-4 py-2 shadow-lg">
             <div className="text-sm font-medium">
@@ -190,35 +211,27 @@ const App: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
 
-        {/* 聊天界面 */}
-        <ChatLayout
-          voice={voice}
-          onVoiceChange={setVoice}
-          model={model}
-          onModelChange={setModel}
-          isSessionActive={isSessionActive}
-          connectionState={connectionState}
-          onToggleSession={handleToggleSession}
-          conversation={displayConversation}
-          status={status}
-          onSendText={sendTextMessage}
-          msgs={msgs}
-          sessionManager={sessionManager}
-          micAnalyser={micAnalyser}
-          getInputVolume={getInputVolume}
-          getOutputVolume={getOutputVolume}
-        />
-      </div>
-    )
-  }
-
-  // 默认显示场景选择器
-  return (
-    <ScenarioSelector
-      onSelectScenario={handleSelectScenario}
-      onStartFreeMode={handleStartFreeMode}
-    />
+      {/* 聊天界面 */}
+      <ChatLayout
+        voice={voice}
+        onVoiceChange={setVoice}
+        model={model}
+        onModelChange={setModel}
+        isSessionActive={isSessionActive}
+        connectionState={connectionState}
+        onToggleSession={handleToggleSession}
+        conversation={displayConversation}
+        status={status}
+        onSendText={sendTextMessage}
+        msgs={msgs}
+        sessionManager={sessionManager}
+        micAnalyser={micAnalyser}
+        getInputVolume={getInputVolume}
+        getOutputVolume={getOutputVolume}
+      />
+    </div>
   )
 }
 
