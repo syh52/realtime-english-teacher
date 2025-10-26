@@ -1,0 +1,1596 @@
+[
+  {
+    "id": "scenario-01",
+    "title": {
+      "zh": "打架斗殴",
+      "en": "Fighting and Brawling"
+    },
+    "category": "conflict",
+    "difficulty": "intermediate",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Passenger A", "Passenger B"]
+    },
+    "background": {
+      "zh": "两名旅客在机舱内发生争执，互相指责对方的行为。作为安全员，你需要迅速介入，平息冲突，确保飞行安全。",
+      "en": "Two passengers are having a heated argument in the cabin, accusing each other. As a security officer, you need to intervene quickly, calm the situation, and ensure flight safety."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "你们两个冷静一下！能告诉我什么原因吗？",
+        "english": "Calm down, both of you! Can you tell me what happened?"
+      },
+      {
+        "speaker": "Passenger A",
+        "chinese": "他路过的时候故意撞我！",
+        "english": "He bumped into me on purpose!"
+      },
+      {
+        "speaker": "Passenger B",
+        "chinese": "不是！是他向我说脏话！",
+        "english": "No! He swore at me!"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "我是本次航班的安全员，你们的行为已经影响到了飞行安全。",
+        "english": "I'm the security officer of this flight. Your behavior is affecting flight safety."
+      },
+      {
+        "speaker": "Passenger A",
+        "chinese": "你把他换到别的位置，否则我还会动手！",
+        "english": "Change his seat, or I will beat him up."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "如果你们不停止你们的行为，我将会报告机长，让机长通知地面公安进行处置！",
+        "english": "If you do not stop right now, I'll report to the captain to call the police to handle it!"
+      }
+    ],
+    "keyPhrases": [
+      "Calm down",
+      "What happened",
+      "affecting flight safety",
+      "report to the captain",
+      "call the police to handle it"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握冲突调解的基本用语",
+        "学会在紧张情况下保持权威和冷静",
+        "掌握威慑性警告的表达方式"
+      ],
+      "en": [
+        "Master basic phrases for conflict mediation",
+        "Learn to maintain authority and composure in tense situations",
+        "Master expressions for deterrent warnings"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "保持冷静、权威的语气",
+        "清晰说明后果",
+        "必要时提及法律后果"
+      ],
+      "en": [
+        "Maintain a calm and authoritative tone",
+        "Clearly state the consequences",
+        "Mention legal consequences when necessary"
+      ]
+    }
+  },
+  {
+    "id": "scenario-02",
+    "title": {
+      "zh": "与驾驶舱沟通-旅客吸烟事件",
+      "en": "Communication with Cockpit - Passenger Smoking Incident"
+    },
+    "category": "communication",
+    "difficulty": "intermediate",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Captain"]
+    },
+    "background": {
+      "zh": "发现一名旅客在厕所吸烟，已制止并没收烟具。现在需要向机长报告情况并请求指示。",
+      "en": "A passenger has been found smoking in the lavatory. The situation has been controlled and smoking materials confiscated. Now you need to report to the captain and request instructions."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "机长，发现一名旅客在厕所吸烟。",
+        "english": "Captain, we found a passenger smoking in the lavatory."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "现在情况如何？",
+        "english": "What's going on?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "我们已将事态控制并已经没收了该乘客的香烟及打火机。建议机长报警处理。",
+        "english": "We have the situation under control and I have confiscated his cigarettes and lighter. I suggest we call the police to handle it."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "做得好！请写好《信息提示单》后交给我。",
+        "english": "Good job! Please complete the Information Reminder Form and submit it to me."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "是的，我马上填写相关单据。",
+        "english": "Yes, I will fill out the relevant documents immediately."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "请对该旅客持续做好监控。",
+        "english": "Please keep this passenger closely under surveillance."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "是的，我已对该旅客的信息作好记录。",
+        "english": "Yes, and I have recorded his information."
+      }
+    ],
+    "keyPhrases": [
+      "found a passenger smoking",
+      "situation under control",
+      "confiscated",
+      "suggest we call the police",
+      "fill out the relevant documents",
+      "keep under surveillance"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握向机长报告紧急情况的流程",
+        "学会简洁清晰地汇报事态",
+        "掌握专业术语的使用"
+      ],
+      "en": [
+        "Master the procedure for reporting emergencies to the captain",
+        "Learn to report situations concisely and clearly",
+        "Master the use of professional terminology"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "先说结论，再说细节",
+        "主动提出处理建议",
+        "明确后续行动计划"
+      ],
+      "en": [
+        "State the conclusion first, then the details",
+        "Proactively propose handling suggestions",
+        "Clarify follow-up action plans"
+      ]
+    }
+  },
+  {
+    "id": "scenario-03",
+    "title": {
+      "zh": "旅客吸烟事件处置",
+      "en": "Handling Passenger Smoking Incident"
+    },
+    "category": "routine",
+    "difficulty": "intermediate",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Passenger"]
+    },
+    "background": {
+      "zh": "发现旅客在洗手间吸烟，需要进行现场取证和警告。根据规定需要录音录像，并告知旅客将被报警处理。",
+      "en": "A passenger has been found smoking in the restroom. You need to conduct on-site evidence collection and warning. According to regulations, audio and video recording is required, and the passenger must be informed that the police will be called."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "你好，我是本次航班的安全员，负责机上安保工作，现在对执勤过程录音录像请配合！你是在洗手间吸烟了是吗？",
+        "english": "I'm the security officer on this flight, responsible for security work onboard. I will record audio and video. Please cooperate. Are you smoking in the restroom?"
+      },
+      {
+        "speaker": "Passenger",
+        "chinese": "是的，我很抱歉。",
+        "english": "I'm sorry, yes I did."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "请问你把烟头丢在哪里了？",
+        "english": "Where did you put your cigarette end?"
+      },
+      {
+        "speaker": "Passenger",
+        "chinese": "我抽的是电子烟。",
+        "english": "I smoke an electronic cigarette."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "吸烟是严重威胁飞行安全的，所以我们会报警，请你在落地后最后一个下机。",
+        "english": "Smoking is a serious threat to flight safety, so we will call the police. Please be the last to disembark after landing."
+      },
+      {
+        "speaker": "Passenger",
+        "chinese": "不好意思，是我的错。",
+        "english": "Sorry, it was my fault."
+      }
+    ],
+    "keyPhrases": [
+      "security officer on this flight",
+      "record audio and video",
+      "please cooperate",
+      "serious threat to flight safety",
+      "call the police",
+      "be the last to disembark"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握现场取证的规范流程",
+        "学会严肃但礼貌的执法用语",
+        "掌握告知法律后果的表达"
+      ],
+      "en": [
+        "Master the standard procedure for on-site evidence collection",
+        "Learn serious but polite law enforcement language",
+        "Master expressions for informing legal consequences"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "先说明身份和程序",
+        "明确告知录音录像",
+        "清晰说明后果"
+      ],
+      "en": [
+        "First state your identity and the procedure",
+        "Clearly inform about audio and video recording",
+        "Clearly state the consequences"
+      ]
+    }
+  },
+  {
+    "id": "scenario-04",
+    "title": {
+      "zh": "擅自使用充电宝",
+      "en": "Unauthorized Use of Power Bank"
+    },
+    "category": "routine",
+    "difficulty": "beginner",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Passenger"]
+    },
+    "background": {
+      "zh": "发现旅客在飞行中使用充电宝，需要制止并解释民航规定，同时提供替代解决方案。",
+      "en": "A passenger is found using a power bank during flight. You need to stop this behavior, explain civil aviation regulations, and provide alternative solutions."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "你好，请不要使用充电宝。",
+        "english": "Excuse me, please do not use the power bank."
+      },
+      {
+        "speaker": "Passenger",
+        "chinese": "但是我的手机没电了。",
+        "english": "But my cell phone is out of battery."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "根据中国民航法规定，在飞行过程中是不允许使用充电宝的。",
+        "english": "According to the CAAC regulations, the power bank cannot be used during the flight."
+      },
+      {
+        "speaker": "Passenger",
+        "chinese": "那我落地后怎么通知家人？",
+        "english": "How do I inform my family when I land?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "如果需要，您可以落地后用我的手机，等您下飞机之后再给您的电话充电。",
+        "english": "You can use my phone if you need, and you can charge your phone when you disembark."
+      },
+      {
+        "speaker": "Passenger",
+        "chinese": "那好吧，谢谢。",
+        "english": "OK, thank you."
+      }
+    ],
+    "keyPhrases": [
+      "please do not use the power bank",
+      "according to the CAAC regulations",
+      "cannot be used during the flight",
+      "you can use my phone",
+      "when you disembark"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握制止违规行为的礼貌用语",
+        "学会引用规定作为依据",
+        "掌握提供替代方案的表达"
+      ],
+      "en": [
+        "Master polite language for stopping violations",
+        "Learn to cite regulations as basis",
+        "Master expressions for providing alternatives"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "先礼貌制止",
+        "解释规定依据",
+        "提供替代方案显示人性化"
+      ],
+      "en": [
+        "First politely stop the behavior",
+        "Explain the regulatory basis",
+        "Provide alternatives to show humanization"
+      ]
+    }
+  },
+  {
+    "id": "scenario-05",
+    "title": {
+      "zh": "醉酒旅客",
+      "en": "Intoxicated Passenger"
+    },
+    "category": "routine",
+    "difficulty": "intermediate",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Passenger"]
+    },
+    "background": {
+      "zh": "发现旅客有饮酒迹象，需要评估其状态，确认是否有同伴协助，并确保其行为可控。",
+      "en": "A passenger shows signs of alcohol consumption. You need to assess their condition, confirm if they have companions to assist, and ensure their behavior is controllable."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "您好，请问您是不是喝酒了？",
+        "english": "Excuse me, may I ask if you have been drinking?"
+      },
+      {
+        "speaker": "Passenger",
+        "chinese": "是的，怎么了？",
+        "english": "Yes, what's the matter?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "没什么，请问您有朋友跟您一起吗？",
+        "english": "It's OK. Do you have any friends with you?"
+      },
+      {
+        "speaker": "Passenger",
+        "chinese": "有的，还有两位朋友跟我一起上机的。",
+        "english": "Yes, there are two other friends who boarded the plane with me."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "那您能控制好自己吗？",
+        "english": "Can you manage your behavior?"
+      },
+      {
+        "speaker": "Passenger",
+        "chinese": "没问题的，我没喝很多酒。",
+        "english": "Sure, I didn't drink a lot."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "好的，如果有什么需要，可以让您随行的朋友告诉我们。",
+        "english": "OK, if you need some help, you can ask your friends to tell us."
+      },
+      {
+        "speaker": "Passenger",
+        "chinese": "好，谢谢。",
+        "english": "OK, thanks."
+      }
+    ],
+    "keyPhrases": [
+      "may I ask if you have been drinking",
+      "do you have any friends with you",
+      "can you manage your behavior",
+      "if you need some help",
+      "ask your friends to tell us"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握委婉询问的技巧",
+        "学会评估潜在风险",
+        "掌握预防性沟通策略"
+      ],
+      "en": [
+        "Master tactful inquiry techniques",
+        "Learn to assess potential risks",
+        "Master preventive communication strategies"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "语气友好但警觉",
+        "确认有同伴照顾",
+        "提前预防可能的问题"
+      ],
+      "en": [
+        "Be friendly but alert",
+        "Confirm companion assistance",
+        "Proactively prevent potential issues"
+      ]
+    }
+  },
+  {
+    "id": "scenario-06",
+    "title": {
+      "zh": "局部清舱",
+      "en": "Localized Cabin Check"
+    },
+    "category": "routine",
+    "difficulty": "intermediate",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Passenger"]
+    },
+    "background": {
+      "zh": "有旅客因个人原因下机，根据安全规定需要对其座位周围的旅客进行行李检查确认。",
+      "en": "A passenger has left the aircraft due to personal reasons. According to safety regulations, you need to conduct a luggage check for passengers around their seat."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "我是航班的航空安全员，请座位号3至9排的旅客检查并确认一下你们的行李。",
+        "english": "I'm the security officer of this flight. Please check and confirm your luggage in rows 3 to 9."
+      },
+      {
+        "speaker": "Passenger",
+        "chinese": "飞机上发生什么了吗？",
+        "english": "What happened on the aircraft?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "坐在6A的旅客由于个人原因已经离开了飞机。",
+        "english": "The passenger in seat 6A has already left the aircraft due to personal reasons."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "为了安全原因请遵循我们的指令。",
+        "english": "For security reasons, please follow our instructions."
+      },
+      {
+        "speaker": "Passenger",
+        "chinese": "我知道了，如果我们有问题的话我会告诉你。",
+        "english": "I see. I'll tell you if we have any problems."
+      }
+    ],
+    "keyPhrases": [
+      "security officer of this flight",
+      "please check and confirm your luggage",
+      "due to personal reasons",
+      "for security reasons",
+      "follow our instructions"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握安全检查的指令用语",
+        "学会解释原因消除疑虑",
+        "掌握强调安全重要性的表达"
+      ],
+      "en": [
+        "Master instruction language for security checks",
+        "Learn to explain reasons to alleviate concerns",
+        "Master expressions emphasizing safety importance"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "清晰说明检查范围",
+        "简要解释原因",
+        "强调安全优先"
+      ],
+      "en": [
+        "Clearly state the inspection scope",
+        "Briefly explain the reason",
+        "Emphasize safety priority"
+      ]
+    }
+  },
+  {
+    "id": "scenario-07",
+    "title": {
+      "zh": "与驾驶舱沟通-乘客终止行程",
+      "en": "Communication with Cockpit - Passengers Discontinuing Journey"
+    },
+    "category": "communication",
+    "difficulty": "intermediate",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Captain"]
+    },
+    "background": {
+      "zh": "有乘客要求终止行程下机，需要向机长报告并询问后续检查要求。",
+      "en": "Passengers request to discontinue their journey and disembark. You need to report to the captain and inquire about follow-up inspection requirements."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "机长，有两名乘客想要终止本次行程。",
+        "english": "Captain, two passengers want to end their trip."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "好吧，他们坐在哪里？我需要通知工作人员。",
+        "english": "Alright, where are their seats? I need to inform the staff."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "他们座位号是6A/B。",
+        "english": "Their seat number is 6A/B."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "机长，下机后我应该做哪一种检查？",
+        "english": "Captain, which kind of check do I need to do after they disembark?"
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "局部的检查就足够了。",
+        "english": "A localized check is enough."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "我知道了，完成后会报告。",
+        "english": "I see. I will report after it's finished."
+      }
+    ],
+    "keyPhrases": [
+      "want to end their trip",
+      "where are their seats",
+      "which kind of check",
+      "a localized check is enough",
+      "will report after it's finished"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握汇报非常规情况的流程",
+        "学会主动询问后续安排",
+        "掌握确认指令的表达"
+      ],
+      "en": [
+        "Master the procedure for reporting irregular situations",
+        "Learn to proactively inquire about follow-up arrangements",
+        "Master expressions for confirming instructions"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "提供准确座位信息",
+        "主动询问后续要求",
+        "确认理解后汇报"
+      ],
+      "en": [
+        "Provide accurate seat information",
+        "Proactively ask about follow-up requirements",
+        "Confirm understanding before reporting"
+      ]
+    }
+  },
+  {
+    "id": "scenario-08",
+    "title": {
+      "zh": "遣返旅客",
+      "en": "Deportees"
+    },
+    "category": "routine",
+    "difficulty": "advanced",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Ground Staff"]
+    },
+    "background": {
+      "zh": "地服人员交接遣返旅客的相关证件和信息，需要确认文件并协调登机流程。",
+      "en": "Ground staff hands over documents and information about deportees. You need to confirm documents and coordinate the boarding process."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Ground Staff",
+        "chinese": "哪位是飞机上的航空安全员？",
+        "english": "Who is the security officer on board?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "我是本次航班上的航空安全员。",
+        "english": "I'm the flight security officer on board."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "有什么事情吗找我？",
+        "english": "Anything for me?"
+      },
+      {
+        "speaker": "Ground Staff",
+        "chinese": "有两名遣返从大阪到上海，这是遣返的证明和护照。",
+        "english": "We have two deportees for the flight from Osaka to Shanghai. Here are their documents and passports."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "谢谢你。但是我需要先通知我们组员，请稍等。",
+        "english": "Thank you. But I need to inform our crew first. So please wait."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "谢谢你的等待，请让遣返旅客先登机。",
+        "english": "Thanks for waiting. Please let the deportees board first."
+      }
+    ],
+    "keyPhrases": [
+      "security officer on board",
+      "anything for me",
+      "documents and passports",
+      "need to inform our crew first",
+      "please let the deportees board first"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握特殊旅客交接流程",
+        "学会协调多方沟通",
+        "掌握专业文件交接用语"
+      ],
+      "en": [
+        "Master the handover procedure for special passengers",
+        "Learn to coordinate multi-party communication",
+        "Master professional document handover language"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "确认身份后再接收",
+        "先通知机组协调",
+        "按流程安排登机"
+      ],
+      "en": [
+        "Confirm identity before accepting",
+        "Inform crew for coordination first",
+        "Arrange boarding according to procedure"
+      ]
+    }
+  },
+  {
+    "id": "scenario-09",
+    "title": {
+      "zh": "与驾驶舱沟通-遣返旅客",
+      "en": "Communication with Cockpit - Deportees"
+    },
+    "category": "communication",
+    "difficulty": "advanced",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Captain"]
+    },
+    "background": {
+      "zh": "向机长报告遣返旅客情况，提供座位信息并确认后续监控要求。",
+      "en": "Report deportee situation to the captain, provide seat information and confirm follow-up surveillance requirements."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "机长，我刚刚从地服那边收到两名遣返旅客的通知。",
+        "english": "Captain, I've just been informed by the staff that there are two deportees."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "好吧！这应该不是什么大问题，请根据程序做并确认。",
+        "english": "Alright! It shouldn't be a big problem, but please follow the procedure and confirm."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "他们坐在哪里？",
+        "english": "And where are they seated?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "他们座位号是27排A/B。",
+        "english": "Their seat number is 27A/B."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "很好，请在登机后再给我报告一下。",
+        "english": "Good! Please report again after boarding."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "别担心，我会处理好的。",
+        "english": "Don't worry! I will handle it."
+      }
+    ],
+    "keyPhrases": [
+      "informed by the staff",
+      "follow the procedure and confirm",
+      "where are they seated",
+      "report again after boarding",
+      "I will handle it"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握特殊旅客报告流程",
+        "学会与机长确认程序",
+        "掌握表达责任感的用语"
+      ],
+      "en": [
+        "Master the reporting procedure for special passengers",
+        "Learn to confirm procedures with the captain",
+        "Master expressions showing responsibility"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "及时报告特殊情况",
+        "明确座位位置",
+        "表达处理信心"
+      ],
+      "en": [
+        "Report special situations promptly",
+        "Clearly state seat locations",
+        "Express confidence in handling"
+      ]
+    }
+  },
+  {
+    "id": "scenario-10",
+    "title": {
+      "zh": "与驾驶舱沟通-使用爆探",
+      "en": "Communication with Cockpit - Using Explosive Detector"
+    },
+    "category": "communication",
+    "difficulty": "advanced",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Captain"]
+    },
+    "background": {
+      "zh": "根据安全程序要求，在使用爆炸物探测器前需要向机长报告检测计划和范围。",
+      "en": "According to safety procedures, you need to report the detection plan and scope to the captain before using the explosive detector."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "机长，根据程序，我们在使用爆探前需要向你报告一些内容。",
+        "english": "Captain, according to procedure, we need to report to you before we start using the detector."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "很好。",
+        "english": "Sounds good."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "爆探已经准备好检测，并且会检测至少百分之五十的乘客。",
+        "english": "The detector is ready for inspection now, and at least fifty percent of passengers will be checked."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "安保组在完成检查后或发现任何问题时会向你报告。",
+        "english": "The security crew will report after the check is finished or if any problem is found."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "辛苦了。",
+        "english": "Thank you for your effort."
+      }
+    ],
+    "keyPhrases": [
+      "according to procedure",
+      "before we start using the detector",
+      "ready for inspection",
+      "at least fifty percent",
+      "will report after the check is finished"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握安检设备使用的报告流程",
+        "学会说明检查范围和计划",
+        "掌握专业安检用语"
+      ],
+      "en": [
+        "Master the reporting procedure for security equipment use",
+        "Learn to explain inspection scope and plan",
+        "Master professional security inspection language"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "引用程序作为依据",
+        "明确检查比例",
+        "承诺完成后报告"
+      ],
+      "en": [
+        "Cite procedures as basis",
+        "Clearly state inspection proportion",
+        "Commit to post-completion reporting"
+      ]
+    }
+  },
+  {
+    "id": "scenario-11",
+    "title": {
+      "zh": "驾驶舱沟通-携带公司文件",
+      "en": "Communication with Cockpit - Carrying Company Documents"
+    },
+    "category": "communication",
+    "difficulty": "beginner",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Captain"]
+    },
+    "background": {
+      "zh": "从公司营业部接收了需要运送的文件，需要向机长申请携带许可并确认安全状态。",
+      "en": "Received documents from the sales department that need to be transported. You need to apply for carrying permission from the captain and confirm security status."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "机长，我从公司营业部那边收到了两份文件。",
+        "english": "Captain, I received two documents from the sales department."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "我能把它们带到上海吗？",
+        "english": "Do I have your approval to bring these documents to Shanghai?"
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "你可以携带，但是请你在安全方面再确认一下。",
+        "english": "You can carry them, but please confirm their security status."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "文件已经经过安检了。",
+        "english": "The documents have already been through security."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "听起来很好！谢谢你给我报告。",
+        "english": "Sounds good! Thanks for your report."
+      }
+    ],
+    "keyPhrases": [
+      "received documents from",
+      "do I have your approval",
+      "confirm their security status",
+      "have already been through security",
+      "thanks for your report"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握申请许可的礼貌用语",
+        "学会确认物品安全状态",
+        "掌握简洁汇报技巧"
+      ],
+      "en": [
+        "Master polite language for requesting permission",
+        "Learn to confirm item security status",
+        "Master concise reporting techniques"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "先说明来源",
+        "礼貌请求许可",
+        "主动确认安全"
+      ],
+      "en": [
+        "First explain the source",
+        "Politely request permission",
+        "Proactively confirm security"
+      ]
+    }
+  },
+  {
+    "id": "scenario-12",
+    "title": {
+      "zh": "机组协同",
+      "en": "Crew Coordination"
+    },
+    "category": "communication",
+    "difficulty": "advanced",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Captain"]
+    },
+    "background": {
+      "zh": "航班起飞前的机组协同会，需要通报空防形势、勤务等级、检查分工和应急预案。",
+      "en": "Pre-flight crew coordination meeting. You need to brief on the security situation, duty level, inspection division, and emergency procedures."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Captain",
+        "chinese": "最近的空防形势如何？",
+        "english": "How about the security situation recently?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "大家好，我是今天的航空安全员，我叫李明。最近的空防形势不太稳定，目前的勤务等级为三级。请大家按照《航空器安保检查单》对驾驶舱和客舱进行检查。",
+        "english": "Hello, I'm the Security Officer of this flight. My name is Li Ming. The security situation hasn't been stable recently and the security level for this flight is level three. Please follow the Aircraft Security Check List to check the cockpit and cabin."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "其他还有什么问题吗？",
+        "english": "Any other questions?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "空防预案如何？",
+        "english": "How about the security procedure?"
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "正常。我们的暗语暗号按照公司程序。",
+        "english": "They are normal. Our security codes are according to company procedures."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "好的。清舱后我会向您报告。",
+        "english": "OK. I will give you the report after I finish the security check."
+      }
+    ],
+    "keyPhrases": [
+      "security situation",
+      "security level for this flight",
+      "follow the Aircraft Security Check List",
+      "security procedure",
+      "according to company procedures",
+      "after I finish the security check"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握自我介绍和形势通报",
+        "学会布置检查任务",
+        "掌握应急预案确认流程"
+      ],
+      "en": [
+        "Master self-introduction and situation briefing",
+        "Learn to assign inspection tasks",
+        "Master emergency procedure confirmation process"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "先介绍自己建立信任",
+        "明确当前安全等级",
+        "确认应急程序"
+      ],
+      "en": [
+        "Introduce yourself first to build trust",
+        "Clearly state current security level",
+        "Confirm emergency procedures"
+      ]
+    }
+  },
+  {
+    "id": "scenario-13",
+    "title": {
+      "zh": "电子设备使用报告机长",
+      "en": "Reporting Use of Electronic Devices to Captain"
+    },
+    "category": "communication",
+    "difficulty": "intermediate",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Captain"]
+    },
+    "background": {
+      "zh": "旅客违规使用电子设备，已制止并警告。现需向机长报告情况并确认后续监控要求。",
+      "en": "A passenger used electronic equipment in violation of regulations. The behavior has been stopped and warning issued. Now need to report to the captain and confirm follow-up surveillance requirements."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Captain",
+        "chinese": "发生什么情况了吗？",
+        "english": "Did anything happen?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "机长，有一名旅客违规使用电子设备。",
+        "english": "Captain, one passenger used electronic equipment in violation of regulations."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "你是如何处置的？",
+        "english": "How did you handle it?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "我已制止他的行为并且发出了警告。",
+        "english": "I have stopped him and given him a warning."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "请对该旅客持续做好监控。",
+        "english": "Please keep this passenger closely under surveillance."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "好的机长，我会一直关注他。",
+        "english": "Sure, I will keep an eye on him all the time."
+      }
+    ],
+    "keyPhrases": [
+      "in violation of regulations",
+      "how did you handle it",
+      "stopped him and given him a warning",
+      "keep closely under surveillance",
+      "keep an eye on"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握报告违规事件的流程",
+        "学会说明处置措施",
+        "掌握承诺后续监控的表达"
+      ],
+      "en": [
+        "Master the procedure for reporting violations",
+        "Learn to explain handling measures",
+        "Master expressions for committing to follow-up surveillance"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "简洁报告违规行为",
+        "说明已采取的措施",
+        "承诺持续监控"
+      ],
+      "en": [
+        "Concisely report the violation",
+        "Explain measures taken",
+        "Commit to continuous surveillance"
+      ]
+    }
+  },
+  {
+    "id": "scenario-14",
+    "title": {
+      "zh": "爆炸物报告",
+      "en": "Reporting Explosives"
+    },
+    "category": "emergency",
+    "difficulty": "expert",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Captain"]
+    },
+    "background": {
+      "zh": "在厕所发现疑似炸弹，需要立即向机长报告并确认是爆炸物后按预案处置。这是最高级别的紧急情况。",
+      "en": "A suspected bomb has been found in the lavatory. You need to immediately report to the captain and follow the emergency procedure after confirmation. This is the highest level emergency."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "报告机长，我们在厕所发现疑似炸弹。",
+        "english": "Captain, we found an explosive in the lavatory."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "确认是爆炸物吗？",
+        "english": "Did you confirm it?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "是的，我们已经确认了是爆炸物。",
+        "english": "Yes, we have confirmed it."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "按照预案处置。",
+        "english": "Deal with it according to procedure."
+      }
+    ],
+    "keyPhrases": [
+      "found an explosive",
+      "did you confirm it",
+      "we have confirmed it",
+      "deal with it according to procedure"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握紧急情况报告的简洁性",
+        "学会在压力下保持冷静",
+        "掌握确认和执行预案的流程"
+      ],
+      "en": [
+        "Master conciseness in emergency reporting",
+        "Learn to stay calm under pressure",
+        "Master procedure confirmation and execution process"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "立即报告，不拖延",
+        "明确确认爆炸物",
+        "严格按预案执行"
+      ],
+      "en": [
+        "Report immediately without delay",
+        "Clearly confirm the explosive",
+        "Strictly follow the procedure"
+      ]
+    }
+  },
+  {
+    "id": "scenario-15",
+    "title": {
+      "zh": "劫机报告",
+      "en": "Reporting Hijacking"
+    },
+    "category": "emergency",
+    "difficulty": "expert",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Captain"]
+    },
+    "background": {
+      "zh": "发生劫机事件，劫机者试图改变航向。已制服劫机者，需要向机长报告情况和处置结果。",
+      "en": "A hijacking incident has occurred. The hijacker attempted to change the flight path. The hijacker has been subdued. Need to report the situation and handling result to the captain."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "机长，我们遇到了劫机。",
+        "english": "Captain, we have a hijacking situation."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "现在什么情况？",
+        "english": "What's the situation now?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "11C一名男子试图胁迫乘务员改变飞机航向至台湾。",
+        "english": "A male passenger in seat 11C tried to force the cabin crew to divert the aircraft to Taiwan."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "事态发展如何？",
+        "english": "What is the current status?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "我已将其制服，情况已得到控制。",
+        "english": "I have stopped him and the situation is under control."
+      }
+    ],
+    "keyPhrases": [
+      "hijacking situation",
+      "what's the situation now",
+      "tried to force",
+      "divert the aircraft",
+      "situation is under control"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握极端紧急情况的报告",
+        "学会清晰描述威胁和行动",
+        "掌握汇报处置结果的表达"
+      ],
+      "en": [
+        "Master reporting of extreme emergencies",
+        "Learn to clearly describe threats and actions",
+        "Master expressions for reporting handling results"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "先报告紧急情况",
+        "详细说明威胁内容",
+        "明确告知已控制"
+      ],
+      "en": [
+        "Report the emergency first",
+        "Detail the threat content",
+        "Clearly state it's under control"
+      ]
+    }
+  },
+  {
+    "id": "scenario-16",
+    "title": {
+      "zh": "旅客使用手机",
+      "en": "Passenger Using Mobile Phone"
+    },
+    "category": "conflict",
+    "difficulty": "intermediate",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Passenger"]
+    },
+    "background": {
+      "zh": "旅客在飞行中使用手机打电话，拒绝配合。需要升级处理并告知法律后果。",
+      "en": "A passenger is making phone calls during flight and refuses to cooperate. You need to escalate the handling and inform legal consequences."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "先生，请立即将手机调至飞行模式！",
+        "english": "Sir, please switch your phone to flight mode immediately."
+      },
+      {
+        "speaker": "Passenger",
+        "chinese": "我需要给我女朋友打电话。",
+        "english": "I need to call my girlfriend."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "先生，飞行期间不允许打电话，请将手机调至飞行模式，落地后再联系。",
+        "english": "Sir, mobile phone calls are not allowed during the flight. Please switch your phone to flight mode. You can contact her after landing."
+      },
+      {
+        "speaker": "Passenger",
+        "chinese": "不！别管我！",
+        "english": "No! Leave me alone!"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "你的行为已经严重危害到了我们的飞行安全，否则我将叫警察来处理，由此产生的后果你自己承担。",
+        "english": "Your behavior has seriously endangered our flight safety. If you don't stop, I will call the police to handle it, and you will bear the consequences arising therefrom."
+      }
+    ],
+    "keyPhrases": [
+      "switch your phone to flight mode",
+      "not allowed during the flight",
+      "after landing",
+      "seriously endangered our flight safety",
+      "call the police to handle it",
+      "bear the consequences"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握制止违规的坚定语气",
+        "学会逐步升级处理强度",
+        "掌握告知法律后果的表达"
+      ],
+      "en": [
+        "Master firm tone for stopping violations",
+        "Learn to gradually escalate handling",
+        "Master expressions for informing legal consequences"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "先礼貌提醒",
+        "说明规定",
+        "最后警告法律后果"
+      ],
+      "en": [
+        "First polite reminder",
+        "Explain the regulations",
+        "Finally warn of legal consequences"
+      ]
+    }
+  },
+  {
+    "id": "scenario-17",
+    "title": {
+      "zh": "与驾驶舱沟通-违规使用手机",
+      "en": "Communication with Cockpit - Illegal Use of Mobile Phone"
+    },
+    "category": "communication",
+    "difficulty": "advanced",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Captain"]
+    },
+    "background": {
+      "zh": "旅客在起飞时违规使用手机且态度恶劣拒绝配合，需要向机长报告并建议报警处理。",
+      "en": "A passenger illegally used a mobile phone during takeoff with a poor attitude and refused to cooperate. Need to report to the captain and suggest calling the police."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "机长，有一旅客在起飞时违规使用手机。",
+        "english": "Captain, a passenger was caught using a mobile phone during takeoff."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "他不肯调成飞行模式？",
+        "english": "Won't he turn it to flight mode?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "是的！这位旅客态度很差，并且拒绝我们的劝告。",
+        "english": "Yes! His attitude is very poor and he rejected our advice."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "好吧！你有什么看法？",
+        "english": "OK! What's your point?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "我们需要呼叫地面公安来处理。",
+        "english": "We need to call the ground police to handle it."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "做得好！请写好《信息提示单》后交给我。",
+        "english": "Good job! Please complete the Information Reminder Form and submit it to me."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "是的，我马上填写相关单据。",
+        "english": "Yes, I will fill out the relevant documents immediately."
+      }
+    ],
+    "keyPhrases": [
+      "was caught using a mobile phone",
+      "during takeoff",
+      "his attitude is very poor",
+      "rejected our advice",
+      "what's your point",
+      "call the ground police",
+      "fill out the relevant documents"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握报告恶劣态度旅客的技巧",
+        "学会主动提出处理建议",
+        "掌握后续文书工作的表达"
+      ],
+      "en": [
+        "Master techniques for reporting passengers with poor attitudes",
+        "Learn to proactively propose handling suggestions",
+        "Master expressions for follow-up paperwork"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "说明违规时机(起飞)",
+        "强调态度恶劣",
+        "主动建议报警"
+      ],
+      "en": [
+        "State the timing of violation (takeoff)",
+        "Emphasize poor attitude",
+        "Proactively suggest calling police"
+      ]
+    }
+  },
+  {
+    "id": "scenario-18",
+    "title": {
+      "zh": "抢占座位",
+      "en": "Seat Grabbing"
+    },
+    "category": "conflict",
+    "difficulty": "beginner",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Passenger A", "Passenger B"]
+    },
+    "background": {
+      "zh": "两名旅客因座位问题发生争执，都声称是自己的座位。需要核实登机牌并解决纠纷。",
+      "en": "Two passengers are disputing over a seat, both claiming it's theirs. You need to verify boarding passes and resolve the dispute."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "请问发生了什么事？",
+        "english": "Excuse me, what's wrong?"
+      },
+      {
+        "speaker": "Passenger A",
+        "chinese": "这是我的座位，我的座位是靠窗的！",
+        "english": "It's my seat, my seat is window-side!"
+      },
+      {
+        "speaker": "Passenger B",
+        "chinese": "不，这是我的座位，你一定是坐错了！",
+        "english": "No! This seat is mine! You must be wrong!"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "请两位给我你们的登机牌。",
+        "english": "OK, please show me your boarding pass."
+      },
+      {
+        "speaker": "Passenger A & B",
+        "chinese": "给。",
+        "english": "Here you are."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "是A先生座位错了，您的座位在后一排，请您回到您的原位。",
+        "english": "I think you are mistaken Mr. A, your seat is in the back row. Please return to your seat."
+      }
+    ],
+    "keyPhrases": [
+      "what's wrong",
+      "window-side",
+      "you must be wrong",
+      "show me your boarding pass",
+      "you are mistaken",
+      "return to your seat"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握核实信息的礼貌用语",
+        "学会公正解决纠纷",
+        "掌握指引旅客的表达"
+      ],
+      "en": [
+        "Master polite language for verification",
+        "Learn to resolve disputes fairly",
+        "Master expressions for directing passengers"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "保持中立态度",
+        "核实登机牌信息",
+        "礼貌指引回座"
+      ],
+      "en": [
+        "Maintain neutral attitude",
+        "Verify boarding pass information",
+        "Politely direct back to seat"
+      ]
+    }
+  },
+  {
+    "id": "scenario-19",
+    "title": {
+      "zh": "押解",
+      "en": "Escort"
+    },
+    "category": "routine",
+    "difficulty": "advanced",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Captain"]
+    },
+    "background": {
+      "zh": "向机长通报航班上将有嫌疑人被警官押解，需要说明特殊要求和注意事项。",
+      "en": "Brief the captain that there will be a suspect escorted by police officers on the flight. Need to explain special requirements and precautions."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "本次航班将有一名嫌疑人，由三名警官押解。嫌疑人将坐在27B座位。",
+        "english": "There will be a suspect escorted by three police officers. The suspect will be seated at 27B."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "安保有什么要求？",
+        "english": "Are there any security requirements?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "被押解人犯要先于其他旅客登机，后于其他旅客下机。不得与重要旅客同机。",
+        "english": "The escorted suspect should board before other passengers, and disembark after others. They cannot be on the same flight as a Very Important Person (VIP)."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "还有其他要求吗？",
+        "english": "Any other requirements?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "不要提供金属餐具，不要提供酒精饮料。",
+        "english": "Don't provide metal tableware. Don't provide alcoholic drinks."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "好的，注意监控。",
+        "english": "Fine. Please pay attention to them."
+      }
+    ],
+    "keyPhrases": [
+      "suspect escorted by police officers",
+      "security requirements",
+      "board before other passengers",
+      "disembark after others",
+      "don't provide metal tableware",
+      "pay attention to"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握特殊旅客通报流程",
+        "学会说明安全限制措施",
+        "掌握专业安保术语"
+      ],
+      "en": [
+        "Master special passenger notification procedure",
+        "Learn to explain safety restriction measures",
+        "Master professional security terminology"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "明确押解人员和座位",
+        "详细说明登离机顺序",
+        "列出服务限制"
+      ],
+      "en": [
+        "Clearly state escorts and seat location",
+        "Detail boarding/disembarking order",
+        "List service restrictions"
+      ]
+    }
+  },
+  {
+    "id": "scenario-20",
+    "title": {
+      "zh": "安保检查完毕报告",
+      "en": "Security Check Completion Report"
+    },
+    "category": "routine",
+    "difficulty": "beginner",
+    "roles": {
+      "learner": "Security Officer",
+      "ai": ["Captain"]
+    },
+    "background": {
+      "zh": "完成客舱安保检查后向机长报告，汇报发现的情况并确认可以开始登机。",
+      "en": "After completing cabin security check, report to the captain, brief on findings and confirm boarding can begin."
+    },
+    "dialogueScript": [
+      {
+        "speaker": "Security Officer",
+        "chinese": "机长，客舱安保检查完毕。",
+        "english": "Captain, the cabin security check is finished."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "好的，有什么情况吗？",
+        "english": "OK, is everything okay?"
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "机长，客舱后部有一箱餐具。",
+        "english": "There's a box of tableware in the rear of the cabin."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "好的，你去检查一下。",
+        "english": "Go and check it."
+      },
+      {
+        "speaker": "Security Officer",
+        "chinese": "已经检查过了，没问题。",
+        "english": "I have checked it. No problem."
+      },
+      {
+        "speaker": "Captain",
+        "chinese": "好，通知旅客登机。",
+        "english": "OK, call for boarding."
+      }
+    ],
+    "keyPhrases": [
+      "security check is finished",
+      "is everything okay",
+      "in the rear of the cabin",
+      "go and check it",
+      "I have checked it",
+      "no problem",
+      "call for boarding"
+    ],
+    "learningObjectives": {
+      "zh": [
+        "掌握完成报告的简洁表达",
+        "学会汇报检查发现",
+        "掌握确认安全的用语"
+      ],
+      "en": [
+        "Master concise expressions for completion reports",
+        "Learn to report inspection findings",
+        "Master expressions for confirming safety"
+      ]
+    },
+    "tips": {
+      "zh": [
+        "先报告完成",
+        "汇报发现物品",
+        "确认已检查无误"
+      ],
+      "en": [
+        "First report completion",
+        "Report found items",
+        "Confirm checked and cleared"
+      ]
+    }
+  }
+]

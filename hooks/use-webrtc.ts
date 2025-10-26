@@ -51,6 +51,7 @@ export default function useWebRTCAudioSession(
   voice: string,
   model: string,
   tools?: Tool[],
+  customInstructions?: string,  // 新增：支持自定义提示词（用于场景模式）
 ): UseWebRTCAudioSessionReturn {
   // Connection/session states
   const [status, setStatus] = useState("");
@@ -108,7 +109,7 @@ export default function useWebRTCAudioSession(
       type: "session.update",
       session: {
         modalities: ["text", "audio"],
-        instructions: COACH_INSTRUCTIONS,  // 核心：AI 教练行为指令
+        instructions: customInstructions || COACH_INSTRUCTIONS,  // 核心：AI 教练行为指令（支持自定义）
         voice: voice,                      // 声音选择
         temperature: SESSION_CONFIG.temperature,
         max_response_output_tokens: SESSION_CONFIG.max_response_output_tokens,
